@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class DisappearingAnomaly : Anomaly
+public class AppearingAnomaly : Anomaly
 {
-    //Anomaly class for anomalies that make objects disappear
+    //Anomaly class for anomalies that make objects appear
 
     [Header("Config")]
     public int cooldownTimer = 150;
@@ -15,15 +15,16 @@ public class DisappearingAnomaly : Anomaly
     private void Start()
     {
         originalMaterial = GetComponent<MeshRenderer>().material; //Save default object material
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
     private void Update()
     {
-       /* if (Random.Range(1, 100) > 98 && Random.Range(1, 5) > 3 && cooldown <= 0) //Randomly trigger anomaly when it's not on cooldown
-        {
-            TriggerAnomaly();
-        }*/
-        if(cooldown > 0) //Counting down the cooldown
+        /* if (Random.Range(1, 100) > 98 && Random.Range(1, 5) > 3 && cooldown <= 0) //Randomly trigger anomaly when it's not on cooldown
+         {
+             TriggerAnomaly();
+         }*/
+        if (cooldown > 0) //Counting down the cooldown
         {
             cooldown -= Time.deltaTime;
         }
@@ -31,7 +32,7 @@ public class DisappearingAnomaly : Anomaly
 
     private void OnMouseOver()
     {
-        if(Input.GetMouseButtonDown(0)) //Undo anomaly when clicked on
+        if (Input.GetMouseButtonDown(0)) //Undo anomaly when clicked on
         {
             UndoAnomaly();
         }
@@ -41,20 +42,13 @@ public class DisappearingAnomaly : Anomaly
     {
         if (isActive) //If anomaly is active, highlight the anomaly when hovering mouse over it
         {
-            gameObject.GetComponent<MeshRenderer>().enabled = true;
             gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-        }       
+        }
     }
 
     private void OnMouseExit()
     {
         if (isActive) //Return material to its current state
-        {
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-            //gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-        }
-        else
         {
             gameObject.GetComponent<MeshRenderer>().material = originalMaterial;
         }
@@ -62,29 +56,28 @@ public class DisappearingAnomaly : Anomaly
 
     public override bool TriggerAnomaly()
     {
-        Debug.Log("Triggered disappearing anomaly");
-        if(cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
+        if (cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
         {
             isActive = true; //Keep track of when it's active
-            
+            Debug.Log("Triggered appearing anomaly");
             //gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
 
-            gameObject.GetComponent<MeshRenderer>().enabled = false; //Make the object disappear
+            gameObject.GetComponent<MeshRenderer>().enabled = true; //Make the object appear
             cooldown += cooldownTimer; //Add cooldown
             currentAnomalyPoint = anomalyValue; //Increase the anomaly point to the set value
-            Debug.Log("current anomaly point: " +  currentAnomalyPoint);
+            Debug.Log("current anomaly point: " + currentAnomalyPoint);
             return true;
         }
         else
         {
             return false;
         }
-        
+
     }
 
     public override void UndoAnomaly()
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = true; //Make anomaly appear back to normal
+        gameObject.GetComponent<MeshRenderer>().enabled = false; //Make anomaly dissapear
         currentAnomalyPoint = 0; //Remove anomaly point
         isActive = false;
     }

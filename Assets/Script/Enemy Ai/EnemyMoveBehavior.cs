@@ -42,6 +42,11 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
             timer = 0;
         }
 
+        if (currentNode.lightAnomaly.Count > 0) //Test, if there's light anomalies avaliable, randomly trigger one
+        {
+            TriggerRandomLightAnomaly();
+            
+        }
         if (currentNode.heavyAnomaly.Count > 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
         {
            TriggerRandomHeavyAnomaly();
@@ -67,16 +72,16 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
 
     private void TriggerRandomLightAnomaly()//Randomly trigger a light anomaly
     {
-        List<Anomaly> anomalies = currentNode.lightAnomaly;
-        int random = Random.Range(0, anomalies.Count);
-        anomalies[random].TriggerAnomaly();
+        List<Anomaly> lightAnomalies = currentNode.lightAnomaly;
+        int random = Random.Range(0, lightAnomalies.Count);
+        lightAnomalies[random].TriggerAnomaly();
     }
 
     private void TriggerRandomHeavyAnomaly() //Randomly tirgger a heavy anomaly
     {
-        List<Anomaly> anomalies = currentNode.heavyAnomaly;
-        int random = Random.Range(0, anomalies.Count);
-        anomalies[random].TriggerAnomaly();
+        List<Anomaly> HeavyAnomalies = currentNode.heavyAnomaly;
+        int random = Random.Range(0, HeavyAnomalies.Count);
+        HeavyAnomalies[random].TriggerAnomaly();
     }
 
     private void SelectRandomNeighbor() //Select a random node from the avaliable connected node
@@ -92,12 +97,10 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
         int random = Random.Range(0, availableNeighbor.Count);
         if (availableNeighbor[random].nodeValue > 0.9)
         {
-            Debug.Log("Selection failed");
             SelectRandomOutOfSight();
         }
         else
         {
-            Debug.Log("Selection Success");
             currentNode = availableNeighbor[random];
         }
     } //Same as SelectingRandomNode but exclude the node that player's looking at
