@@ -10,6 +10,8 @@ public class TestEnemy1 : EnemyMoveBehavior
     float cooldownTimer;
     GameManager manager;
 
+    
+    /*
     private void OnEnable()
     {
         originalMaterial = GetComponent<MeshRenderer>().material;
@@ -69,5 +71,5 @@ public class TestEnemy1 : EnemyMoveBehavior
             gameObject.GetComponent<MeshRenderer>().material = originalMaterial;
 
         }
-    }
+    }*/
 }

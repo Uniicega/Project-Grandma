@@ -19,10 +19,10 @@ public class DisappearingAnomaly : Anomaly
 
     private void Update()
     {
-        if (Random.Range(1, 100) > 98 && Random.Range(1, 5) > 3 && cooldown <= 0) //Randomly trigger anomaly when it's not on cooldown
+       /* if (Random.Range(1, 100) > 98 && Random.Range(1, 5) > 3 && cooldown <= 0) //Randomly trigger anomaly when it's not on cooldown
         {
             TriggerAnomaly();
-        }
+        }*/
         if(cooldown > 0) //Counting down the cooldown
         {
             cooldown -= Time.deltaTime;
@@ -62,7 +62,7 @@ public class DisappearingAnomaly : Anomaly
 
     public override bool TriggerAnomaly()
     {
-        if(cooldown <= 0) //Check if not in cooldown
+        if(cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
         {
             isActive = true; //Keep track of when it's active
 
