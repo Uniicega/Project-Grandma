@@ -2,7 +2,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMoveBehavior : MonoBehaviour
+public abstract class EnemyMoveBehavior : MonoBehaviour
 {
     [Header("AI Config")]
     public int difficultyLevel;
@@ -18,6 +18,7 @@ public class EnemyMoveBehavior : MonoBehaviour
 
     MovementNode currentNode;
     List<MovementNode> availableNeighbor;
+    Rigidbody rb;
 
     private void Start()
     {
@@ -29,7 +30,7 @@ public class EnemyMoveBehavior : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        if (opportunityTime <= timer)
+        if (opportunityTime <= timer) //See if enough time has passed for the enemy to have a movement oppertunity
         {
             HandleMovement();
             transform.position = currentNode.transform.position;
@@ -37,7 +38,7 @@ public class EnemyMoveBehavior : MonoBehaviour
         }
     }
 
-    private void HandleMovement()
+    private void HandleMovement() //Randomly decide if the enemy get to move
     {
         if(difficultyLevel >= Random.Range(0, 20))
         {
@@ -49,14 +50,14 @@ public class EnemyMoveBehavior : MonoBehaviour
         }
     }
 
-    private void SelectRandomNeighbor()
+    private void SelectRandomNeighbor() //Select a random node from the avaliable connected node
     {
         availableNeighbor = currentNode.neighborNodes;
         int random = Random.Range(0, availableNeighbor.Count);
         currentNode = availableNeighbor[random];
     }
 
-    private void SelectWeightedNeighbor()
+    private void SelectWeightedNeighbor() //Make enemy move toward nodes with higher value
     {
         availableNeighbor = currentNode.neighborNodes;
 
@@ -65,19 +66,19 @@ public class EnemyMoveBehavior : MonoBehaviour
 
         for(int i = 0; i < availableNeighbor.Count; i++)
         {
-            if (availableNeighbor[i].nodeValue > maxNodeValue)
+            if (availableNeighbor[i].nodeValue > maxNodeValue) //If the node value is higher, discard the lower value nodes and choose the new highest value node
             {
                 maxNodeValue = availableNeighbor[i].nodeValue;
                 maxNodePositions.Clear();
                 maxNodePositions.Add(availableNeighbor[i]);
             }
-            else if (availableNeighbor[i].nodeValue == maxNodeValue)
+            else if (availableNeighbor[i].nodeValue == maxNodeValue) //If the node value is the same as current highest value nod, keep both of them
             {
                 maxNodePositions.Add(availableNeighbor[i]);
             }
         }
 
-        int random = Random.Range(0, maxNodePositions.Count);
+        int random = Random.Range(0, maxNodePositions.Count); //If there's more than 1 highest node value, pick a random one
         currentNode = maxNodePositions[random];
     }
 }

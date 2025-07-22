@@ -8,34 +8,57 @@ public class MovementNode : MonoBehaviour
     public int nodeValue = 0;
     public List<MovementNode> neighborNodes;
 
-    public TextMeshPro valueText;
+    [Header("Anomalies")]
+    public List<Anomaly> lightAnomaly;
+    public List<Anomaly> heavyAnomaly;
 
-    private void OnDrawGizmos()
+    [SerializeField] TextMeshPro valueText;
+    public int anomalyPoint = 0;
+
+    private void Start()
+    {
+        foreach (var node in neighborNodes) //Set nodes to connect to each others
+        {
+            if (!node.neighborNodes.Contains(this))
+            node.AddNeighbor(this);
+        }
+        valueText.text = anomalyPoint.ToString();
+    }
+
+    private void Update()
+    {
+        TallyAnomalyPoint();
+    }
+
+    public void TallyAnomalyPoint() //Loop through all anomalies connected to this node and sum up the anomaly point
+    {
+        anomalyPoint = 0;
+        foreach(var anomaly in lightAnomaly)
+        {
+            anomalyPoint += anomaly.currentAnomalyPoint;
+        }
+        foreach (var anomaly in heavyAnomaly)
+        {
+            anomalyPoint += anomaly.currentAnomalyPoint;
+        }
+        valueText.text = anomalyPoint.ToString(); //Display point for debugging purpose
+    }
+
+    public void AddNeighbor(MovementNode neighbor) //Add neighbor to the list
+    {
+        neighborNodes.Add(neighbor); 
+    }
+
+    private void OnDrawGizmos() //Funny green line in inspect
     {
         Gizmos.color = Color.green;
 
 
         foreach (var node in neighborNodes)
         {
-            if(node != null)
-            Gizmos.DrawLine(transform.position, node.transform.position);
+            if (node != null)
+                Gizmos.DrawLine(transform.position, node.transform.position);
 
-        }       
-    }
-
-    private void Start()
-    {
-        foreach (var node in neighborNodes)
-        {
-            if (!node.neighborNodes.Contains(this))
-            node.AddNeighbor(this);
         }
-
-        valueText.text = nodeValue.ToString();
-    }
-
-    public void AddNeighbor(MovementNode neighbor)
-    {
-        neighborNodes.Add(neighbor);
     }
 }
