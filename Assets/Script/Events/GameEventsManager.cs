@@ -14,5 +14,6 @@ public class GameEventsManager : MonoBehaviour
         instance = this;
 
         anomalyEvents = new AnomalyEvents();
+        Debug.Log("Instantiate game events");
     }
 }

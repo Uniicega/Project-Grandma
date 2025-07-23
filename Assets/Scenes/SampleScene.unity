@@ -2565,11 +2565,11 @@ Transform:
   m_GameObject: {fileID: 287403303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 774.40765, y: 593.4127, z: -42.340946}
+  m_LocalPosition: {x: 718.52875, y: 531.079, z: -10.102173}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1853213919}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &287403305
 MonoBehaviour:
@@ -5340,7 +5340,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 43318
+    surfaceParameter: 43322
     meshQueryIndex: 5
     subMeshQueryIndex: 0
     geometryHashValue: -8642515757968887025
@@ -12586,7 +12586,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   second: 0
   timeLimit: 10000000
-  tickRate: 20
   timeDisplay: {fileID: 1767988436}
   debugMessage: {fileID: 1333407915}
   enemyEvents: []
@@ -13600,7 +13599,7 @@ MonoBehaviour:
     meshQuery:
       layers: 16777223
       maskAndChannels: 234881031
-    surfaceParameter: 43090
+    surfaceParameter: 43094
     meshQueryIndex: 0
     subMeshQueryIndex: 0
     geometryHashValue: 5273510504696895693
@@ -16127,7 +16126,7 @@ MonoBehaviour:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 43176
+    surfaceParameter: 43180
     meshQueryIndex: 1
     subMeshQueryIndex: 0
     geometryHashValue: 3421006854445746676
@@ -16166,7 +16165,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 287403304}
   - {fileID: 1405038414}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -17246,7 +17244,7 @@ MonoBehaviour:
     meshQuery:
       layers: 33554440
       maskAndChannels: 8
-    surfaceParameter: 43176
+    surfaceParameter: 43180
     meshQueryIndex: 1
     subMeshQueryIndex: 0
     geometryHashValue: 3421006854445746676
@@ -18800,6 +18798,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 990044206}
+  - {fileID: 287403304}
   - {fileID: 1853213919}
   - {fileID: 609950132}
   - {fileID: 832575519}

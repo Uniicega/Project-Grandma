@@ -14,6 +14,7 @@ public class AppearingAnomaly : Anomaly
     public bool undoValid;
     public float cooldown;
 
+
     private void Start()
     {
         originalMaterial = GetComponent<MeshRenderer>().material; //Save default object material

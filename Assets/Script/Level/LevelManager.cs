@@ -9,7 +9,6 @@ public class LevelManager : MonoBehaviour
     [Header("Level Config")]
     public float second;
     public float timeLimit;
-    public float tickRate;
     public TextMeshProUGUI timeDisplay;
     public TextMeshProUGUI debugMessage;
 
@@ -26,7 +25,7 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateTime()
     {
-        second += Time.fixedDeltaTime * tickRate;
+        second += Time.fixedDeltaTime;
     }
 
     private void DisplayTime()

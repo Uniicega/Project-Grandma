@@ -1,6 +1,4 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class DisappearingAnomaly : Anomaly
 {
@@ -15,6 +13,7 @@ public class DisappearingAnomaly : Anomaly
     public bool mouseIsOver = false;
     public bool undoValid;
     public float cooldown;
+
 
     private void Start()
     {
@@ -69,11 +68,11 @@ public class DisappearingAnomaly : Anomaly
 
     public override bool TriggerAnomaly()
     {
-        Debug.Log("Triggered disappearing anomaly");
+        
         if(cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
         {
             isActive = true; //Keep track of when it's active
-            
+            Debug.Log("Triggered disappearing anomaly");
             //gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
 
             gameObject.GetComponent<MeshRenderer>().enabled = false; //Make the object disappear
