@@ -8,7 +8,7 @@ public class TestEnemy1 : EnemyMoveBehavior
     public bool isHighlighted;
     bool onCooldown;
     float cooldownTimer;
-    GameManager manager;
+    LevelManager manager;
 
     
     /*

@@ -3,7 +3,7 @@ using UnityEngine;
 public class GameEventsManager : MonoBehaviour
 {
     public static GameEventsManager instance { get; private set; }
-    public InputEvents inputEvents;
+    public AnomalyEvents anomalyEvents;
 
     private void Awake()
     {
@@ -13,6 +13,6 @@ public class GameEventsManager : MonoBehaviour
         }
         instance = this;
 
-        inputEvents = new InputEvents();
+        anomalyEvents = new AnomalyEvents();
     }
 }

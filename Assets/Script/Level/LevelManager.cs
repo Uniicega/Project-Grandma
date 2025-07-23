@@ -4,7 +4,7 @@ using TMPro;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 using System.Collections.Generic;
 
-public class GameManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     [Header("Level Config")]
     public float second;

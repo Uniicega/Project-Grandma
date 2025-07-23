@@ -1,4 +1,6 @@
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class DisappearingAnomaly : Anomaly
 {
@@ -10,6 +12,8 @@ public class DisappearingAnomaly : Anomaly
     Material originalMaterial;
     public Material highlightMaterial;
     public bool isActive;
+    public bool mouseIsOver = false;
+    public bool undoValid;
     public float cooldown;
 
     private void Start()
@@ -29,26 +33,28 @@ public class DisappearingAnomaly : Anomaly
         }
     }
 
-    private void OnMouseOver()
+    /*private void OnMouseOver()
     {
         if(Input.GetMouseButtonDown(0)) //Undo anomaly when clicked on
         {
             UndoAnomaly();
         }
-    }
+    }*/
 
     private void OnMouseEnter()
     {
-        if (isActive) //If anomaly is active, highlight the anomaly when hovering mouse over it
+        /*if (isActive) //If anomaly is active, highlight the anomaly when hovering mouse over it
         {
             gameObject.GetComponent<MeshRenderer>().enabled = true;
             gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-        }       
+        }      */
+        mouseIsOver = true;
+
     }
 
     private void OnMouseExit()
     {
-        if (isActive) //Return material to its current state
+        /*if (isActive) //Return material to its current state
         {
             gameObject.GetComponent<MeshRenderer>().enabled = false;
 
@@ -57,7 +63,8 @@ public class DisappearingAnomaly : Anomaly
         else
         {
             gameObject.GetComponent<MeshRenderer>().material = originalMaterial;
-        }
+        }*/
+        mouseIsOver = false;
     }
 
     public override bool TriggerAnomaly()
@@ -84,8 +91,20 @@ public class DisappearingAnomaly : Anomaly
 
     public override void UndoAnomaly()
     {
-        gameObject.GetComponent<MeshRenderer>().enabled = true; //Make anomaly appear back to normal
-        currentAnomalyPoint = 0; //Remove anomaly point
-        isActive = false;
+        if(undoValid)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = true; //Make anomaly appear back to normal
+            currentAnomalyPoint = 0; //Remove anomaly point
+            isActive = false;
+        }     
+    }
+
+    public override void StartHoldingAnomaly()
+    {
+        if(mouseIsOver)
+        {
+            undoValid = true;
+        }
+        else { undoValid = false; }
     }
 }
