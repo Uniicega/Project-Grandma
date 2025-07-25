@@ -20,4 +20,31 @@ public class DebugEvents : MonoBehaviour
             onActivateAllAnomalies();
         }
     }
+
+    public event Action onActivateLightAnomalies;
+    public void ActivateLightAnomalies()
+    {
+        if (onActivateLightAnomalies != null)
+        {
+            onActivateLightAnomalies();
+        }
+    }
+
+    public event Action onActivateHeavyAnomalies;
+    public void ActivateHeavyAnomalies()
+    {
+        if (onActivateHeavyAnomalies != null)
+        {
+            onActivateHeavyAnomalies();
+        }
+    }
+
+    public event Action onActivateAttackAnomalies;
+    public void ActivateAttackAnomalies()
+    {
+        if (onActivateAttackAnomalies != null)
+        {
+            onActivateAttackAnomalies();
+        }
+    }
 }

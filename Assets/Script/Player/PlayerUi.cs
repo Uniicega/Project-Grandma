@@ -105,7 +105,19 @@ public class PlayerUi : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.J))
         {
-            GameEventsManager.instance.debugEvents.ActivateAllAnomalies();
+            GameEventsManager.instance.debugEvents.ActivateLightAnomalies();
+            GameEventsManager.instance.anomalyEvents.TriggerLightAnomaly();
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            GameEventsManager.instance.debugEvents.ActivateHeavyAnomalies();
+            GameEventsManager.instance.anomalyEvents.TriggerHeavyAnomaly();
+        }
+
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            GameEventsManager.instance.debugEvents.ActivateAttackAnomalies();
         }
     }
 }

@@ -3,15 +3,18 @@ using UnityEngine;
 public abstract class Anomaly: MonoBehaviour
 {
     //Abstract class for anomalies
+    [Header("Anomaly Config")]
+    public bool lightAnomaly;
+    public bool heavyAnomaly;
     public int currentAnomalyPoint;
     public int anomalyValue;
-    public bool isActive;
+    protected bool isActive;
 
-    public Material originalMaterial;
-    public Material currentMaterial;
-    public bool currentMeshActive;
+    protected Material originalMaterial;
+    protected Material currentMaterial;
+    protected bool currentMeshActive;
     public Material highlightMaterial;
-    public bool isHighlighted = false;
+    protected bool isHighlighted = false;
 
     private void OnEnable()
     {
@@ -22,8 +25,11 @@ public abstract class Anomaly: MonoBehaviour
     {
         GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly += StartHoldingAnomaly;
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly += UndoAnomaly;
+
         GameEventsManager.instance.debugEvents.onPressHighlight += PressHighlight;
         GameEventsManager.instance.debugEvents.onActivateAllAnomalies += ActivateAllAnomalies;
+        GameEventsManager.instance.debugEvents.onActivateLightAnomalies += ActivateLightAnomalies;
+        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies += ActivateHeavyAnomalies;
         Debug.Log("Subscribe to game events");
     }
 
@@ -31,9 +37,11 @@ public abstract class Anomaly: MonoBehaviour
     {
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly -= UndoAnomaly;
         GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly -= StartHoldingAnomaly;
+
         GameEventsManager.instance.debugEvents.onPressHighlight -= PressHighlight;
         GameEventsManager.instance.debugEvents.onActivateAllAnomalies -= ActivateAllAnomalies;
-
+        GameEventsManager.instance.debugEvents.onActivateLightAnomalies -= ActivateLightAnomalies;
+        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies -= ActivateHeavyAnomalies;
     }
 
     public abstract bool TriggerAnomaly();
@@ -68,5 +76,21 @@ public abstract class Anomaly: MonoBehaviour
     public void ActivateAllAnomalies()
     {
         TriggerAnomaly();
+    }
+
+    public void ActivateLightAnomalies()
+    {
+        if (lightAnomaly)
+        {
+            TriggerAnomaly();
+        }
+    }
+
+    public void ActivateHeavyAnomalies()
+    {
+        if (heavyAnomaly)
+        {
+            TriggerAnomaly();
+        }
     }
 }

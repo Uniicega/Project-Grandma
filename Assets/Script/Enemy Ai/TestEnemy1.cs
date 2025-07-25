@@ -31,6 +31,8 @@ public class TestEnemy1 : EnemyMoveBehavior
     private void OnEnable()
     {
         GameEventsManager.instance.anomalyEvents.onFinishPraying += FinishPraying;
+        GameEventsManager.instance.debugEvents.onActivateAttackAnomalies += ActivateAttackAnomaly;
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
 
         gameobjectNodes = new List<GameObject>(GameObject.FindGameObjectsWithTag("Nodes"));
         movementNodes = new List<MovementNode>();
@@ -43,6 +45,7 @@ public class TestEnemy1 : EnemyMoveBehavior
     private void OnDisable()
     {
         GameEventsManager.instance.anomalyEvents.onFinishPraying -= FinishPraying;
+        GameEventsManager.instance.debugEvents.onActivateAttackAnomalies -= ActivateAttackAnomaly;
 
     }
 
@@ -50,14 +53,14 @@ public class TestEnemy1 : EnemyMoveBehavior
     {
         lightAnomalyCooldown -= Time.deltaTime;
         heavyAnomalyCooldown -= Time.deltaTime;
-        if (currentNode.lightAnomaly.Count > 0 && lightAnomalyCooldown <= 0) //Test, if there's light anomalies avaliable, randomly trigger one
+        /*if (currentNode.lightAnomaly.Count > 0 && lightAnomalyCooldown <= 0) //Test, if there's light anomalies avaliable, randomly trigger one
         {
             TriggerRandomLightAnomaly();
         }
         if (currentNode.heavyAnomaly.Count > 0 && heavyAnomalyCooldown <= 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
         {
             TriggerRandomHeavyAnomaly();
-        }
+        }*/
 
         TallyAnomalyPoints();
 
@@ -145,8 +148,8 @@ public class TestEnemy1 : EnemyMoveBehavior
 
     private void AttackPhase()
     {
+        gameObject.GetComponent<MeshRenderer>().enabled = true;
         GameEventsManager.instance.anomalyEvents.TriggerAttackAnomaly();
-        Debug.LogWarning("Enemy in attack phase");
         timer = 0;
         attackCountdown -= Time.deltaTime;
         if(attackCountdown <= 0)
@@ -159,10 +162,14 @@ public class TestEnemy1 : EnemyMoveBehavior
 
     private void ChasedPhase()
     {
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
         GameEventsManager.instance.anomalyEvents.TriggerChasedAnomaly();
-        Debug.LogWarning("EnemyIsChased");
     }
 
+    private void ActivateAttackAnomaly()
+    {
+        enemyEnum = EnemyEnum.AttackPhase;
+    }
     /*
     private void OnEnable()
     {
