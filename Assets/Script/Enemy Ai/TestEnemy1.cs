@@ -104,7 +104,10 @@ public class TestEnemy1 : EnemyMoveBehavior
     {
         List<Anomaly> lightAnomalies = currentNode.lightAnomaly;
         int random = Random.Range(0, lightAnomalies.Count);
-        lightAnomalies[random].TriggerAnomaly();
+        if(lightAnomalies[random].TriggerAnomaly() == true)
+        {
+            GameEventsManager.instance.anomalyEvents.TriggerLightAnomaly();
+        }
         lightAnomalyCooldown = 2;
     }
 
@@ -112,7 +115,10 @@ public class TestEnemy1 : EnemyMoveBehavior
     {
         List<Anomaly> HeavyAnomalies = currentNode.heavyAnomaly;
         int random = Random.Range(0, HeavyAnomalies.Count);
-        HeavyAnomalies[random].TriggerAnomaly();
+        if(HeavyAnomalies[random].TriggerAnomaly() == true)
+        {
+            GameEventsManager.instance.anomalyEvents.TriggerHeavyAnomaly();
+        }
         heavyAnomalyCooldown = 2;
     }
 
@@ -139,6 +145,7 @@ public class TestEnemy1 : EnemyMoveBehavior
 
     private void AttackPhase()
     {
+        GameEventsManager.instance.anomalyEvents.TriggerAttackAnomaly();
         Debug.LogWarning("Enemy in attack phase");
         timer = 0;
         attackCountdown -= Time.deltaTime;
@@ -152,6 +159,7 @@ public class TestEnemy1 : EnemyMoveBehavior
 
     private void ChasedPhase()
     {
+        GameEventsManager.instance.anomalyEvents.TriggerChasedAnomaly();
         Debug.LogWarning("EnemyIsChased");
     }
 

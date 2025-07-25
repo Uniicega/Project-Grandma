@@ -5,11 +5,8 @@ public class DisappearingAnomaly : Anomaly
     //Anomaly class for anomalies that make objects disappear
 
     [Header("Config")]
-    public int cooldownTimer = 150;
+    public int cooldownTimer = 10;
 
-    Material originalMaterial;
-    public Material highlightMaterial;
-    public bool isActive;
     public bool mouseIsOver = false;
     public bool undoValid;
     public float cooldown;
@@ -78,14 +75,13 @@ public class DisappearingAnomaly : Anomaly
             gameObject.GetComponent<MeshRenderer>().enabled = false; //Make the object disappear
             cooldown += cooldownTimer; //Add cooldown
             currentAnomalyPoint = anomalyValue; //Increase the anomaly point to the set value
-            Debug.Log("current anomaly point: " +  currentAnomalyPoint);
+            Debug.Log("Added anomaly point: " +  currentAnomalyPoint);
             return true;
         }
         else
         {
             return false;
-        }
-        
+        }      
     }
 
     public override void UndoAnomaly()

@@ -25,31 +25,40 @@ public class PlayerUi : MonoBehaviour
 
     private void Update()
     {
-        if( Input.GetMouseButton(0) )
+        HandleAnomalySlider();
+        HandlePrayingSlider();
+        HandleDebugToggles();
+    }
+
+    private void HandleAnomalySlider()
+    {
+        if (Input.GetMouseButton(0))
         {
             ActivateAnomalySlider(); //Activate slider
             fixProgression += Time.deltaTime; //Counting up slider timer
             anomalySlider.value = fixProgression;
 
-            if( fixProgression >= anomalySlider.maxValue && anomalySliderObject.activeSelf) //If timer is complete and is still active (this is to stop the slider from reactivating again without letting go of the mouse)
+            if (fixProgression >= anomalySlider.maxValue && anomalySliderObject.activeSelf) //If timer is complete and is still active (this is to stop the slider from reactivating again without letting go of the mouse)
             {
                 anomalySliderObject.SetActive(false); //Deactivate slider
                 GameEventsManager.instance.anomalyEvents.UndoAnomaly();
             }
         }
-        else if( Input.GetMouseButtonUp(0) ) //If player release mouse button, deactivate slider 
+        else if (Input.GetMouseButtonUp(0)) //If player release mouse button, deactivate slider 
         {
-            anomalySliderObject.SetActive(false );
+            anomalySliderObject.SetActive(false);
             isHoldingFixAnomaly = false;
         }
-
+    }
+    private void HandlePrayingSlider()
+    {
         if (Input.GetKey(KeyCode.Space))
         {
             ActivatePrayingSldier();
             prayingProgression += Time.deltaTime;
             prayingSlider.value = prayingProgression;
 
-            if( prayingProgression >= prayingSlider.maxValue && prayingSliderObject.activeSelf)
+            if (prayingProgression >= prayingSlider.maxValue && prayingSliderObject.activeSelf)
             {
                 prayingSliderObject.SetActive(false);
                 GameEventsManager.instance.anomalyEvents.FinishPraying();
@@ -87,5 +96,16 @@ public class PlayerUi : MonoBehaviour
             prayingSliderObject.SetActive(true); //Activate slider object
         }
     }
+    private void HandleDebugToggles()
+    {
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            GameEventsManager.instance.debugEvents.PressHighlight();
+        }
 
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            GameEventsManager.instance.debugEvents.ActivateAllAnomalies();
+        }
+    }
 }

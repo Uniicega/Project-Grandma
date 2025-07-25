@@ -1,12 +1,11 @@
 using UnityEngine;
 
-public class AppearingAnomaly : Anomaly
+public class DiscolorAnomaly : Anomaly
 {
-    //Anomaly class for anomalies that make objects appear
-
     [Header("Config")]
     public int cooldownTimer = 10;
- 
+
+    public Material discolorMaterial;
     public bool mouseIsOver = false;
     public bool undoValid;
     public float cooldown;
@@ -15,7 +14,6 @@ public class AppearingAnomaly : Anomaly
     private void Start()
     {
         originalMaterial = GetComponent<MeshRenderer>().material; //Save default object material
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
     }
 
     private void Update()
@@ -24,8 +22,6 @@ public class AppearingAnomaly : Anomaly
         {
             cooldown -= Time.deltaTime;
         }
-
-
     }
 
     private void OnMouseEnter()
@@ -43,9 +39,9 @@ public class AppearingAnomaly : Anomaly
         if (cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
         {
             isActive = true; //Keep track of when it's active
-            Debug.Log("Triggered appearing anomaly");
+            Debug.Log("Triggered discoloring anomaly");
 
-            gameObject.GetComponent<MeshRenderer>().enabled = true; //Make the object appear
+            gameObject.GetComponent<MeshRenderer>().material = discolorMaterial; //Make the object appear
             cooldown += cooldownTimer; //Add cooldown
             currentAnomalyPoint = anomalyValue; //Increase the anomaly point to the set value
             Debug.Log("Added anomaly point: " + currentAnomalyPoint);
@@ -59,12 +55,12 @@ public class AppearingAnomaly : Anomaly
 
     public override void UndoAnomaly()
     {
-        if(undoValid)
+        if (undoValid)
         {
-            gameObject.GetComponent<MeshRenderer>().enabled = false; //Make anomaly dissapear
+            gameObject.GetComponent<MeshRenderer>().material = originalMaterial; //Make anomaly dissapear
             currentAnomalyPoint = 0; //Remove anomaly point
             isActive = false;
-        }       
+        }
     }
 
     public override void StartHoldingAnomaly()

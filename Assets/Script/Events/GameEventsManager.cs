@@ -4,7 +4,7 @@ public class GameEventsManager : MonoBehaviour
 {
     public static GameEventsManager instance { get; private set; }
     public AnomalyEvents anomalyEvents;
-
+    public DebugEvents debugEvents;
     private void Awake()
     {
         if (instance != null)
@@ -14,6 +14,7 @@ public class GameEventsManager : MonoBehaviour
         instance = this;
 
         anomalyEvents = new AnomalyEvents();
+        debugEvents = new DebugEvents();
         Debug.Log("Instantiate game events");
     }
 }
