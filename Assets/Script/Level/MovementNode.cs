@@ -27,6 +27,7 @@ public class MovementNode : MonoBehaviour
         }
         valueText.text = anomalyPoint.ToString();
         playerCam = GameObject.FindGameObjectWithTag("Player");
+
     }
 
     private void Update()
@@ -34,8 +35,6 @@ public class MovementNode : MonoBehaviour
         TallyAnomalyPoint();
         CalculatePlayerLookDir();
     }
-
-    
 
     private void CalculatePlayerLookDir() //Calculate if the player is looking at the node or not
     {

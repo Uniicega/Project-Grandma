@@ -20,4 +20,13 @@ public class AnomalyEvents
             onStartHoldingAnomaly();
         }
     }
+
+    public event Action onFinishPraying;
+    public void FinishPraying()
+    {
+        if (onFinishPraying != null)
+        {
+            onFinishPraying();
+        }
+    }
 }

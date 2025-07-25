@@ -11,24 +11,83 @@ public class TestEnemy1 : EnemyMoveBehavior
     public bool isHighlighted;
     [SerializeField] EnemyEnum enemyEnum;
 
-    private float attackCountdown = 4;
-    bool onCooldown;
-    float cooldownTimer;
-    LevelManager manager;
+    [Header("Anomany")]
+    public int lightAnomalyThreshhold;
+    public int heavyAnomalyThreshhold;
+    private float lightAnomalyCooldown = 2;
+    private float heavyAnomalyCooldown = 2;
+    private bool praySuccessed = false;
 
     [Header("Nodes")]
     [SerializeField]  private List<GameObject> gameobjectNodes;
     [SerializeField]  private List<MovementNode> movementNodes;
     public int anomalyPoints;
 
+    private float attackCountdown = 10;
+    bool onCooldown;
+    float cooldownTimer;
+    LevelManager manager;
+
     private void OnEnable()
     {
+        GameEventsManager.instance.anomalyEvents.onFinishPraying += FinishPraying;
+
         gameobjectNodes = new List<GameObject>(GameObject.FindGameObjectsWithTag("Nodes"));
         movementNodes = new List<MovementNode>();
-        enemyEnum = EnemyEnum.LightAnomalyPhase;
+        enemyEnum = EnemyEnum.HeavyAnomalyPhase;
         foreach (GameObject nodes in gameobjectNodes)
         {
             movementNodes.Add(nodes.GetComponent<MovementNode>());
+        }
+    }
+    private void OnDisable()
+    {
+        GameEventsManager.instance.anomalyEvents.onFinishPraying -= FinishPraying;
+
+    }
+
+    private void FixedUpdate()
+    {
+        lightAnomalyCooldown -= Time.deltaTime;
+        heavyAnomalyCooldown -= Time.deltaTime;
+        if (currentNode.lightAnomaly.Count > 0 && lightAnomalyCooldown <= 0) //Test, if there's light anomalies avaliable, randomly trigger one
+        {
+            TriggerRandomLightAnomaly();
+        }
+        if (currentNode.heavyAnomaly.Count > 0 && heavyAnomalyCooldown <= 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
+        {
+            TriggerRandomHeavyAnomaly();
+        }
+
+        TallyAnomalyPoints();
+
+        if(anomalyPoints >= heavyAnomalyThreshhold && enemyEnum == EnemyEnum.HeavyAnomalyPhase)
+        {
+            enemyEnum = EnemyEnum.AttackPhase;
+        }
+
+        if(enemyEnum == EnemyEnum.AttackPhase && praySuccessed)
+        {
+            enemyEnum = EnemyEnum.ChasedPhase; 
+            praySuccessed = false;
+        }
+
+        if(enemyEnum != EnemyEnum.AttackPhase)
+        {
+            praySuccessed = false;
+        }
+
+        if(enemyEnum == EnemyEnum.HeavyAnomalyPhase)
+        {
+            HeavyAnomalyPhase();
+        }
+        else if(enemyEnum == EnemyEnum.AttackPhase)
+        {
+            AttackPhase();
+        }
+        else if (enemyEnum == EnemyEnum.ChasedPhase)
+        {
+            ChasedPhase();
         }
     }
 
@@ -41,16 +100,33 @@ public class TestEnemy1 : EnemyMoveBehavior
         }
     }
 
-    private void FixedUpdate()
+    private void TriggerRandomLightAnomaly()//Randomly trigger a light anomaly
     {
-        TallyAnomalyPoints();
-
-        if(anomalyPoints >= heavyAnomalyThreshhold)
-        {
-            AttackPhase();
-        }
+        List<Anomaly> lightAnomalies = currentNode.lightAnomaly;
+        int random = Random.Range(0, lightAnomalies.Count);
+        lightAnomalies[random].TriggerAnomaly();
+        lightAnomalyCooldown = 2;
     }
 
+    private void TriggerRandomHeavyAnomaly() //Randomly tirgger a heavy anomaly
+    {
+        List<Anomaly> HeavyAnomalies = currentNode.heavyAnomaly;
+        int random = Random.Range(0, HeavyAnomalies.Count);
+        HeavyAnomalies[random].TriggerAnomaly();
+        heavyAnomalyCooldown = 2;
+    }
+
+    private void FinishPraying()
+    {
+        if(playerIsLooking)
+        {
+            praySuccessed = true;
+        }
+        else
+        {
+            praySuccessed = false;
+        }
+    }
     private void LightAnomalyPhase()
     {
 
@@ -69,13 +145,14 @@ public class TestEnemy1 : EnemyMoveBehavior
         if(attackCountdown <= 0)
         {
             Debug.Log("Player is dead");
-            attackCountdown = 4;
+            attackCountdown = 10;
+            enemyEnum = EnemyEnum.ChasedPhase;
         }
     }
 
     private void ChasedPhase()
     {
-
+        Debug.LogWarning("EnemyIsChased");
     }
 
     /*

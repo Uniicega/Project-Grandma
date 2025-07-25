@@ -10,12 +10,6 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
     public bool weightedBehavior;
     public bool outOfSightBehavior;
 
-    [Header("Anomany")]
-    public int lightAnomalyThreshhold;
-    public int heavyAnomalyThreshhold;
-    private float lightAnomalyCooldown = 2;
-    private float heavyAnomalyCooldown = 2;
-
     [Header("Timer")]
     public float timer = 0;
     public float opportunityTime;
@@ -25,36 +19,29 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
 
     public MovementNode currentNode;
     List<MovementNode> availableNeighbor;
+    GameObject playerCam;
+    public bool playerIsLooking = false; 
     Rigidbody rb;
 
     private void Start()
     {
         currentNode = starterNode;
         transform.position = currentNode.transform.position;
+        playerCam = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
     {
         timer += Time.deltaTime;
-        lightAnomalyCooldown -= Time.deltaTime;
-        heavyAnomalyCooldown -= Time.deltaTime;
-
         if (opportunityTime <= timer) //See if enough time has passed for the enemy to have a movement oppertunity
         {
             HandleMovement();
             transform.position = currentNode.transform.position;
             timer = 0;
         }
+        CheckPlayerLooking();
 
-        if (currentNode.lightAnomaly.Count > 0 && lightAnomalyCooldown <= 0) //Test, if there's light anomalies avaliable, randomly trigger one
-        {
-            TriggerRandomLightAnomaly();
-            
-        }
-        if (currentNode.heavyAnomaly.Count > 0 && heavyAnomalyCooldown <= 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
-        {
-           TriggerRandomHeavyAnomaly();
-        }
+        
     }
 
     private void HandleMovement() //Randomly decide if the enemy get to move
@@ -72,22 +59,6 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
             else
             SelectRandomNeighbor();
         }
-    }
-
-    private void TriggerRandomLightAnomaly()//Randomly trigger a light anomaly
-    {
-        List<Anomaly> lightAnomalies = currentNode.lightAnomaly;
-        int random = Random.Range(0, lightAnomalies.Count);
-        lightAnomalies[random].TriggerAnomaly();
-        lightAnomalyCooldown = 2;
-    }
-
-    private void TriggerRandomHeavyAnomaly() //Randomly tirgger a heavy anomaly
-    {
-        List<Anomaly> HeavyAnomalies = currentNode.heavyAnomaly;
-        int random = Random.Range(0, HeavyAnomalies.Count);
-        HeavyAnomalies[random].TriggerAnomaly();
-        heavyAnomalyCooldown = 2;
     }
 
     private void SelectRandomNeighbor() //Select a random node from the avaliable connected node
@@ -134,6 +105,20 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
 
         int random = Random.Range(0, maxNodePositions.Count); //If there's more than 1 highest node value, pick a random one
         currentNode = maxNodePositions[random];
+    }
+
+    private void CheckPlayerLooking()
+    {
+        Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
+        float dot = Vector3.Dot(dir, playerCam.transform.forward);
+        if( dot >= 0.9)
+        {
+            playerIsLooking = true;
+        }
+        else
+        {
+            playerIsLooking = false;
+        }
     }
 
 }
