@@ -1,16 +1,83 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
+
 
 public class TestEnemy1 : EnemyMoveBehavior
 {
+    [Header("Hightlight Materials")]
     Material originalMaterial;
     public Material highlightMaterial;
     public bool isHighlighted;
+    [SerializeField] EnemyEnum enemyEnum;
+
+    private float attackCountdown = 4;
     bool onCooldown;
     float cooldownTimer;
     LevelManager manager;
 
-    
+    [Header("Nodes")]
+    [SerializeField]  private List<GameObject> gameobjectNodes;
+    [SerializeField]  private List<MovementNode> movementNodes;
+    public int anomalyPoints;
+
+    private void OnEnable()
+    {
+        gameobjectNodes = new List<GameObject>(GameObject.FindGameObjectsWithTag("Nodes"));
+        movementNodes = new List<MovementNode>();
+        enemyEnum = EnemyEnum.LightAnomalyPhase;
+        foreach (GameObject nodes in gameobjectNodes)
+        {
+            movementNodes.Add(nodes.GetComponent<MovementNode>());
+        }
+    }
+
+    private void TallyAnomalyPoints()
+    {
+        anomalyPoints = 0;
+        foreach (MovementNode nodes in movementNodes)
+        {
+            anomalyPoints += nodes.anomalyPoint;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        TallyAnomalyPoints();
+
+        if(anomalyPoints >= heavyAnomalyThreshhold)
+        {
+            AttackPhase();
+        }
+    }
+
+    private void LightAnomalyPhase()
+    {
+
+    }
+
+    private void HeavyAnomalyPhase()
+    {
+
+    }
+
+    private void AttackPhase()
+    {
+        Debug.LogWarning("Enemy in attack phase");
+        timer = 0;
+        attackCountdown -= Time.deltaTime;
+        if(attackCountdown <= 0)
+        {
+            Debug.Log("Player is dead");
+            attackCountdown = 4;
+        }
+    }
+
+    private void ChasedPhase()
+    {
+
+    }
+
     /*
     private void OnEnable()
     {

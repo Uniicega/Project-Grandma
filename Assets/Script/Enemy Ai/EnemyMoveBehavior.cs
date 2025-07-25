@@ -13,6 +13,8 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
     [Header("Anomany")]
     public int lightAnomalyThreshhold;
     public int heavyAnomalyThreshhold;
+    private float lightAnomalyCooldown = 2;
+    private float heavyAnomalyCooldown = 2;
 
     [Header("Timer")]
     public float timer = 0;
@@ -34,6 +36,8 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
     private void Update()
     {
         timer += Time.deltaTime;
+        lightAnomalyCooldown -= Time.deltaTime;
+        heavyAnomalyCooldown -= Time.deltaTime;
 
         if (opportunityTime <= timer) //See if enough time has passed for the enemy to have a movement oppertunity
         {
@@ -42,12 +46,12 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
             timer = 0;
         }
 
-        if (currentNode.lightAnomaly.Count > 0) //Test, if there's light anomalies avaliable, randomly trigger one
+        if (currentNode.lightAnomaly.Count > 0 && lightAnomalyCooldown <= 0) //Test, if there's light anomalies avaliable, randomly trigger one
         {
             TriggerRandomLightAnomaly();
             
         }
-        if (currentNode.heavyAnomaly.Count > 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
+        if (currentNode.heavyAnomaly.Count > 0 && heavyAnomalyCooldown <= 0) //Test, if there's heavy anomalies avaliable, randomly trigger one
         {
            TriggerRandomHeavyAnomaly();
         }
@@ -75,6 +79,7 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
         List<Anomaly> lightAnomalies = currentNode.lightAnomaly;
         int random = Random.Range(0, lightAnomalies.Count);
         lightAnomalies[random].TriggerAnomaly();
+        lightAnomalyCooldown = 2;
     }
 
     private void TriggerRandomHeavyAnomaly() //Randomly tirgger a heavy anomaly
@@ -82,6 +87,7 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
         List<Anomaly> HeavyAnomalies = currentNode.heavyAnomaly;
         int random = Random.Range(0, HeavyAnomalies.Count);
         HeavyAnomalies[random].TriggerAnomaly();
+        heavyAnomalyCooldown = 2;
     }
 
     private void SelectRandomNeighbor() //Select a random node from the avaliable connected node
