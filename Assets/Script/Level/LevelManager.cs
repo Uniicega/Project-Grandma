@@ -16,6 +16,12 @@ public class LevelManager : MonoBehaviour
     [Header("Enemy Event")]
     public List<EnemyEvent> enemyEvents = new List<EnemyEvent>();
     int eventIndex = 0;
+    float nextEventTime;
+
+    private void Start()
+    {
+        nextEventTime = enemyEvents[eventIndex].eventTime;
+    }
 
     private void Update()
     {
@@ -39,10 +45,11 @@ public class LevelManager : MonoBehaviour
     {
         if(eventIndex < enemyEvents.Count)
         {
-            if (enemyEvents[eventIndex].eventTime <= second) //Check if it's time for next enemy event to happen
+            if (nextEventTime <= second) //Check if it's time for next enemy event to happen
             {
                 enemyEvents[eventIndex].UpdateEnemyAI(); //Update enemy Ai using method in EnemyEvent class
                 eventIndex++; //Move on to the next enemy event
+                nextEventTime = enemyEvents[eventIndex].eventTime;
                 debugMessage.text = "Change enemy AI at time: " + second.ToString();
             }
         }       

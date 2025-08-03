@@ -43,7 +43,11 @@ public class PointClickCamera : MonoBehaviour
             TurnCameraRight();
         }
 
-        HandleCameraMovement(); //Do camera movement stuff
+        if(isTurning)
+        {
+            HandleCameraMovement(); //Do camera movement stuff
+        }
+        
     }
 
     public void TurnCameraLeft()
@@ -82,7 +86,7 @@ public class PointClickCamera : MonoBehaviour
     private void HandleCameraMovement()
     {
         currentRotationY = Mathf.SmoothDamp(currentRotationY, targetRotationY, ref camSpeed, camSmoothTime); //Smooth camera turn (janky camera turn target rn FIX LATER)
-        PointCam.transform.rotation = Quaternion.Euler(0, currentRotationY, 0);
+        PointCam.transform.rotation = Quaternion.Euler(currentCam.transform.eulerAngles.x, currentRotationY, currentCam.transform.eulerAngles.z);
 
         if (currentRotationY >= targetRotationY - 5*turningOffset && currentRotationY <= targetRotationY + 5*turningOffset && isTurning) //Teleport camera to target position when it has almost turned toward the target
         {

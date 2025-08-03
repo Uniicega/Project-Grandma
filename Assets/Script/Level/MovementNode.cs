@@ -33,10 +33,9 @@ public class MovementNode : MonoBehaviour
     private void Update()
     {
         TallyAnomalyPoint();
-        CalculatePlayerLookDir();
     }
 
-    private void CalculatePlayerLookDir() //Calculate if the player is looking at the node or not
+    public void CalculatePlayerLookDir() //Calculate if the player is looking at the node or not
     {
         Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
         float dot = Vector3.Dot(dir, playerCam.transform.forward);

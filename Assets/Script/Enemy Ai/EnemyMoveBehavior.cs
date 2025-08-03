@@ -39,7 +39,7 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
             transform.position = currentNode.transform.position;
             timer = 0;
         }
-        CheckPlayerLooking();
+        //CheckPlayerLooking();
 
         
     }
@@ -71,6 +71,11 @@ public abstract class EnemyMoveBehavior : MonoBehaviour
     private void SelectRandomOutOfSight()
     {
         availableNeighbor = currentNode.neighborNodes;
+        foreach (var neighbor in availableNeighbor)
+        {
+            neighbor.CalculatePlayerLookDir();
+        }
+
         int random = Random.Range(0, availableNeighbor.Count);
         if (availableNeighbor[random].nodeValue > 0.9)
         {
