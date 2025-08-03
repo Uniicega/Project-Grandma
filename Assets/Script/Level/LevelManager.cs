@@ -3,12 +3,16 @@ using UnityEngine.UI;
 using TMPro;
 using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 using System.Collections.Generic;
+using System;
 
 public class LevelManager : MonoBehaviour
 {
     [Header("Level Config")]
     public float second;
-    public float timeLimit;
+    public float midnightSecond = 120;
+    public float timeLimit = 360;
+    public int timeSpeed = 1;
+
     public TextMeshProUGUI timeDisplay;
     public TextMeshProUGUI debugMessage;
     public GameObject VictoryMessage;
@@ -18,9 +22,13 @@ public class LevelManager : MonoBehaviour
     int eventIndex = 0;
     float nextEventTime;
 
+    int hour;
+    int minute;
+
     private void Start()
     {
-        nextEventTime = enemyEvents[eventIndex].eventTime;
+        if (eventIndex < enemyEvents.Count)
+            nextEventTime = enemyEvents[eventIndex].eventTime;
     }
 
     private void Update()
@@ -33,12 +41,21 @@ public class LevelManager : MonoBehaviour
 
     private void UpdateTime()
     {
-        second += Time.deltaTime;
+        second += Time.deltaTime * timeSpeed;
     }
 
     private void DisplayTime()
     {
-        timeDisplay.text = second.ToString();
+        ConvertSecondToHour();
+        if (second < midnightSecond)
+        {
+            timeDisplay.text = hour.ToString() + " : " + minute.ToString() + "0";
+        }
+        else if (second >= midnightSecond)
+        {
+            timeDisplay.text = "0" + hour.ToString() + " : " + minute.ToString() + "0";
+        }
+        
     }
 
     private void CheckEnemyEvent() 
@@ -62,5 +79,19 @@ public class LevelManager : MonoBehaviour
             VictoryMessage.SetActive(true);
             Time.timeScale = 0;
         }
+    }
+
+    private void ConvertSecondToHour()
+    {
+        if(second < midnightSecond)
+        {
+            hour = 22 + (int)Math.Floor(second / 60);
+        }
+        else if(second >= midnightSecond)
+        {
+            hour = (int)Math.Floor((second - 120) / 60);
+        }
+
+        minute = (int)Math.Floor(second % 60 / 10);
     }
 }

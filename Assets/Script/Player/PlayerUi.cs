@@ -14,6 +14,8 @@ public class PlayerUi : MonoBehaviour
     private bool isHoldingFixAnomaly = false;
     private bool isPraying = false;
 
+    [SerializeField] Animator anomalyHandAnimator;
+
     private void Start()
     {
         anomalySlider = anomalySliderObject.GetComponent<Slider>();
@@ -46,6 +48,7 @@ public class PlayerUi : MonoBehaviour
         }
         else if (Input.GetMouseButtonUp(0)) //If player release mouse button, deactivate slider 
         {
+            anomalyHandAnimator.SetTrigger("AnomalyHandDown");
             anomalySliderObject.SetActive(false);
             isHoldingFixAnomaly = false;
         }
@@ -74,6 +77,7 @@ public class PlayerUi : MonoBehaviour
     {
         if (!isHoldingFixAnomaly)
         {
+            anomalyHandAnimator.SetTrigger("AnomalyHandUp");
             GameEventsManager.instance.anomalyEvents.StartHoldingAnomaly();
             fixProgression = 0; //Reset slider timer
             isHoldingFixAnomaly = true; //Keep track when mosue is already been held
