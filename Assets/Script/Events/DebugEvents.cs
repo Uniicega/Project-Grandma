@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class DebugEvents : MonoBehaviour
+public class DebugEvents
 {
     public event Action onPressHighlight;
     public void PressHighlight()
@@ -45,6 +45,23 @@ public class DebugEvents : MonoBehaviour
         if (onActivateAttackAnomalies != null)
         {
             onActivateAttackAnomalies();
+        }
+    }
+
+    public event Action onRefillIncense;
+    public void RefillIncense()
+    {
+        if (onRefillIncense != null)
+        {
+            onRefillIncense();
+        }
+    }
+    public event Action onSnapIncense;
+    public void SnapIncense()
+    {
+        if (onSnapIncense != null)
+        {
+            onSnapIncense();
         }
     }
 }

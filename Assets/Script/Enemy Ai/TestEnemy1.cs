@@ -64,7 +64,7 @@ public class TestEnemy1 : EnemyMoveBehavior
 
         TallyAnomalyPoints();
 
-        if(anomalyPoints >= heavyAnomalyThreshhold && enemyEnum == EnemyEnum.HeavyAnomalyPhase)
+        /*if(anomalyPoints >= heavyAnomalyThreshhold && enemyEnum == EnemyEnum.HeavyAnomalyPhase)
         {
             enemyEnum = EnemyEnum.AttackPhase;
         }
@@ -84,7 +84,7 @@ public class TestEnemy1 : EnemyMoveBehavior
         {
             HeavyAnomalyPhase();
         }
-        else if(enemyEnum == EnemyEnum.AttackPhase)
+        else*/ if (enemyEnum == EnemyEnum.AttackPhase)
         {
             AttackPhase();
         }
@@ -154,16 +154,17 @@ public class TestEnemy1 : EnemyMoveBehavior
         attackCountdown -= Time.deltaTime;
         if(attackCountdown <= 0)
         {
-            Debug.Log("Player is dead");
+            Debug.Log("Snap");
             attackCountdown = 10;
             enemyEnum = EnemyEnum.ChasedPhase;
+            GameEventsManager.instance.anomalyEvents.TriggerChasedAnomaly();
+
         }
     }
 
     private void ChasedPhase()
     {
         gameObject.GetComponent<MeshRenderer>().enabled = false;
-        GameEventsManager.instance.anomalyEvents.TriggerChasedAnomaly();
     }
 
     private void ActivateAttackAnomaly()

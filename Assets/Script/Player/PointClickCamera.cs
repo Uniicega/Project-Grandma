@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PointClickCamera : MonoBehaviour
 {
@@ -7,6 +8,17 @@ public class PointClickCamera : MonoBehaviour
     public float camSmoothTime;
     public float camSpeed;
     public float turningOffset;
+    public float sensX;
+    public float sensY;
+
+    float currentRotationY;
+    float targetRotationY = 0;
+
+    float xRotation;
+    float yRotation;
+
+    bool isTurning = false;
+    bool disableSideTurning;
 
     [Header("Cameras")]
     private GameObject currentCam;
@@ -19,35 +31,60 @@ public class PointClickCamera : MonoBehaviour
 
     [SerializeField] Animator sceneTransition;
 
-    float currentRotationY;
-    float targetRotationY = 0;
-    bool isTurning = false;
-
-
     private void Start()
     {
         currentCam = windowCam; //Set camera to default position
         cameraIndex = 1;
         SetCamPosition();
+
     }
 
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) //When getting key input, set target for camera to turn to
-        {
-            TurnCameraLeft();
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            TurnCameraRight();
-        }
+        HandleKeyboardInput();
 
-        if(isTurning)
+        if (isTurning)
         {
             HandleCameraMovement(); //Do camera movement stuff
         }
+        /*else if(!disableSideTurning)
+        {
+            MouseCameraMovement();
+        }*/
         
+    }
+
+    private void MouseCameraMovement()
+    {
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+
+        yRotation = currentRotationY + mouseX;
+        xRotation = mouseY;
+
+        
+
+        PointCam.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+    }
+    private void HandleKeyboardInput()
+    {
+        if (Input.GetKeyDown(KeyCode.A) && !disableSideTurning) //When getting key input, set target for camera to turn to
+        {
+            TurnCameraLeft();
+        }
+        if (Input.GetKeyDown(KeyCode.D) && !disableSideTurning)
+        {
+            TurnCameraRight();
+        }
+        if (Input.GetKeyDown(KeyCode.W)) //When getting key input, set target for camera to turn to
+        {
+            TurnCameraUp();
+        }
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            TurnCameraDown();
+        }
     }
 
     public void TurnCameraLeft()
@@ -64,7 +101,6 @@ public class PointClickCamera : MonoBehaviour
                 cameraIndex = 4; //loop value back incase of underflow
             }
         }
-
     }
 
     public void TurnCameraRight()
@@ -80,6 +116,24 @@ public class PointClickCamera : MonoBehaviour
             {
                 cameraIndex = 1; //loop value back incase of overflow
             }
+        }
+    }
+
+    public void TurnCameraUp()
+    {
+        if(!isTurning)
+        {
+            disableSideTurning = true;
+            CamLookup(true);
+        }
+    }
+
+    public void TurnCameraDown()
+    {
+        if (!isTurning)
+        {
+            disableSideTurning = false;
+            CamLookup(false);
         }
     }
 
@@ -127,5 +181,19 @@ public class PointClickCamera : MonoBehaviour
         PointCam.transform.rotation = currentCam.transform.rotation;
         currentRotationY = currentCam.transform.eulerAngles.y ;
         targetRotationY = currentCam.transform.eulerAngles.y;
+    }
+
+    private void CamLookup(bool dir)
+    {
+        if (dir)
+        {
+            PointCam.transform.position = ceilingCam.transform.position;
+            PointCam.transform.rotation = ceilingCam.transform.rotation;
+        }
+        else
+        {
+            PointCam.transform.position = currentCam.transform.position;
+            PointCam.transform.rotation = currentCam.transform.rotation;
+        }
     }
 }

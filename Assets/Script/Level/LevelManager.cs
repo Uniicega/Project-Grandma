@@ -8,14 +8,22 @@ using System;
 public class LevelManager : MonoBehaviour
 {
     [Header("Level Config")]
-    public float second;
-    public float midnightSecond = 120;
-    public float timeLimit = 360;
-    public int timeSpeed = 1;
+    public float currentTime;
+    [SerializeField] private float midnightTime = 120;
+    [SerializeField] private float finishTime = 360;
+    [SerializeField] public int timeSpeed = 1;
+
+    [Header("Incense Config")]
+    [SerializeField] private float incenseCurrentTime;
+    [SerializeField] private Incense incense;
+    [SerializeField] private float incenseMaxTime;
+    [SerializeField] private int incenseSection;
+    [SerializeField] private int maxIncenseSection;
 
     public TextMeshProUGUI timeDisplay;
     public TextMeshProUGUI debugMessage;
     public GameObject VictoryMessage;
+    public GameObject DefeatMessage;
 
     [Header("Enemy Event")]
     public List<EnemyEvent> enemyEvents = new List<EnemyEvent>();
@@ -24,74 +32,129 @@ public class LevelManager : MonoBehaviour
 
     int hour;
     int minute;
+    float size;
 
+
+    private void OnEnable()
+    {
+        GameEventsManager.instance.debugEvents.onRefillIncense += RefillIncense;
+        GameEventsManager.instance.debugEvents.onSnapIncense += SnapIncense;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.debugEvents.onRefillIncense -= RefillIncense;
+        GameEventsManager.instance.debugEvents.onSnapIncense -= SnapIncense;
+    }
     private void Start()
     {
         if (eventIndex < enemyEvents.Count)
             nextEventTime = enemyEvents[eventIndex].eventTime;
+        incenseSection = maxIncenseSection;
+        incenseCurrentTime = incenseMaxTime;
     }
 
     private void Update()
     {
         UpdateTime(); //Counting up time
         DisplayTime(); //Display time on screen
+
+        SetIncenseSize();
         CheckVictory();
+        CheckDefeat();
+
         CheckEnemyEvent(); //Do time based enemy event
     }
 
     private void UpdateTime()
     {
-        second += Time.deltaTime * timeSpeed;
+        
+        currentTime += Time.deltaTime * timeSpeed;
+        incenseCurrentTime -=  Time.deltaTime * timeSpeed;
     }
 
     private void DisplayTime()
     {
-        ConvertSecondToHour();
-        if (second < midnightSecond)
+        if (currentTime < midnightTime)
+        {
+            hour = 22 + (int)Math.Floor(currentTime / 60);
+        }
+        else if (currentTime >= midnightTime)
+        {
+            hour = (int)Math.Floor((currentTime - 120) / 60);
+        }
+        minute = (int)Math.Floor(currentTime % 60 / 10);
+
+
+        if (currentTime < midnightTime)
         {
             timeDisplay.text = hour.ToString() + " : " + minute.ToString() + "0";
         }
-        else if (second >= midnightSecond)
+        else if (currentTime >= midnightTime)
         {
             timeDisplay.text = "0" + hour.ToString() + " : " + minute.ToString() + "0";
         }
         
     }
 
+    private void SetIncenseSize()
+    {
+        float incensePercentage =  incenseCurrentTime / 100;
+        incense.incensePercentage = incensePercentage;
+    }
+
+    private void SnapIncense()
+    {
+        incenseSection--;
+        SetIncenseSection();
+    }
+    private void SetIncenseSection()
+    {
+        size = (float)incenseSection / maxIncenseSection;
+        incenseMaxTime = incenseMaxTime * size;
+        if (incenseCurrentTime > incenseMaxTime)
+        {
+            incenseCurrentTime = incenseMaxTime;
+        }
+        Debug.Log(incenseCurrentTime + "-" + incenseMaxTime);
+        
+    }
+
+    private void RefillIncense()
+    {
+        incenseCurrentTime = incenseMaxTime;
+    }
+
     private void CheckEnemyEvent() 
     {
         if(eventIndex < enemyEvents.Count)
         {
-            if (nextEventTime <= second) //Check if it's time for next enemy event to happen
+            if (nextEventTime <= currentTime) //Check if it's time for next enemy event to happen
             {
                 enemyEvents[eventIndex].UpdateEnemyAI(); //Update enemy Ai using method in EnemyEvent class
                 eventIndex++; //Move on to the next enemy event
                 nextEventTime = enemyEvents[eventIndex].eventTime;
-                debugMessage.text = "Change enemy AI at time: " + second.ToString();
+                debugMessage.text = "Change enemy AI at time: " + currentTime.ToString();
             }
-        }       
+        }
     }
 
     private void CheckVictory()
     {
-        if(second >= timeLimit)
+        if(currentTime >= finishTime)
         {
             VictoryMessage.SetActive(true);
             Time.timeScale = 0;
         }
     }
 
-    private void ConvertSecondToHour()
+    private void CheckDefeat()
     {
-        if(second < midnightSecond)
+        if(incenseCurrentTime <= 0)
         {
-            hour = 22 + (int)Math.Floor(second / 60);
+            Debug.Log("Defeat");
         }
-        else if(second >= midnightSecond)
-        {
-            hour = (int)Math.Floor((second - 120) / 60);
-        }
-
-        minute = (int)Math.Floor(second % 60 / 10);
     }
+
+
 }

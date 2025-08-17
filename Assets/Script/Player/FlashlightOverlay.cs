@@ -44,7 +44,7 @@ public class FlashlightOverlay : MonoBehaviour
         animator.SetTrigger("Default");
     }
 
-    private void TriggerHeavyAnomaly()
+    public void TriggerHeavyAnomaly()
     {
         animator.SetTrigger("HeavyFlickering");
         StartCoroutine(WaitForFlickering());

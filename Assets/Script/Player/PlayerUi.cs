@@ -29,7 +29,6 @@ public class PlayerUi : MonoBehaviour
     {
         HandleAnomalySlider();
         HandlePrayingSlider();
-        HandleDebugToggles();
     }
 
     private void HandleAnomalySlider()
@@ -100,28 +99,5 @@ public class PlayerUi : MonoBehaviour
             prayingSliderObject.SetActive(true); //Activate slider object
         }
     }
-    private void HandleDebugToggles()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            GameEventsManager.instance.debugEvents.PressHighlight();
-        }
-
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            GameEventsManager.instance.debugEvents.ActivateLightAnomalies();
-            GameEventsManager.instance.anomalyEvents.TriggerLightAnomaly();
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            GameEventsManager.instance.debugEvents.ActivateHeavyAnomalies();
-            GameEventsManager.instance.anomalyEvents.TriggerHeavyAnomaly();
-        }
-
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            GameEventsManager.instance.debugEvents.ActivateAttackAnomalies();
-        }
-    }
+    
 }
