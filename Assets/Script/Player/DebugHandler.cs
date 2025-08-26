@@ -9,7 +9,7 @@ public class DebugHandler : MonoBehaviour
 
     private void HandleDebugToggles()
     {
-        if (Input.GetKeyDown(KeyCode.H))
+        /*if (Input.GetKeyDown(KeyCode.H))
         {
             GameEventsManager.instance.debugEvents.PressHighlight();
         }
@@ -39,6 +39,6 @@ public class DebugHandler : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.O))
         {
             GameEventsManager.instance.debugEvents.SnapIncense();
-        }
+        }*/
     }
 }
