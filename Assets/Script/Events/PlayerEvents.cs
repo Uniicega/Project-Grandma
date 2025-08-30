@@ -8,4 +8,10 @@ public class PlayerEvents
     {
         onRefillIncense?.Invoke();
     }
+
+    public event Action onCompleteInteract;
+    public void CompleteInteract()
+    {
+        onCompleteInteract?.Invoke();
+    }
 }

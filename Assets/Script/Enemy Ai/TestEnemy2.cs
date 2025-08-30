@@ -5,55 +5,69 @@ public class TestEnemy2 : MonoBehaviour
 {
     [Header("Anomalies")]
     public int difficultyLevel;
-    [SerializeField] AnomalyManager anomalyManager;
     public int heavyAnomalyThreshhold;
     public int attackThreashhold;
     public float cooldownDuration;
     public float graceDuration;
 
-    private float currentCooldown;
-    private bool isAttaching;
+    [Header("State")]
+    [SerializeField] private float currentCooldown;
+    [SerializeField] private float currentGrace;
+    [SerializeField] private bool isAttacking;
+    [SerializeField] private int anomalyPoint;
+
+    private AnomalyManager anomalyManager;
+    
+    
+
+    private void Start()
+    {
+        anomalyManager = GameManager.instance.anomalyManager;
+    }
 
     private void Update()
     {
         if(currentCooldown <= 0)
         {
             TrySpawningAnomaly();
-            currentCooldown = cooldownDuration;
         }
         else
         {
             currentCooldown -= Time.deltaTime;
+            currentGrace -= Time.deltaTime;
         }
     }
 
     private void TrySpawningAnomaly()
     {
-        int anomalyPoint = anomalyManager.TallyAnomalyPoint();
+        anomalyPoint = anomalyManager.TallyAnomalyPoint();
 
         if (difficultyLevel >= Random.Range(0, 20))
         {
-            if(anomalyPoint >= heavyAnomalyThreshhold)
+            if (anomalyPoint >= attackThreashhold && currentGrace <= 0)
+            {
+                AttackPlayer();
+            }
+            else if (anomalyPoint >= heavyAnomalyThreshhold)
             {
                 if (!anomalyManager.TriggerRandomHeavyAnomaly())
                     currentCooldown = 0;
                 else currentCooldown = cooldownDuration;
             }
-            else if(anomalyPoint <= cooldownDuration)
+            else
             {
                 if (!anomalyManager.TriggerRandomLightAnomaly())
                     currentCooldown = 0;
                 else currentCooldown = cooldownDuration;
             }
-            else if(anomalyPoint >= attackThreashhold)
-            {
-                AttackPlayer();
-            }
+            return;
         }
+        currentCooldown = cooldownDuration;
     }
 
     private void AttackPlayer()
     {
         GameEventsManager.instance.anomalyEvents.SnapIncense();
+        currentGrace = graceDuration;
     }
 }

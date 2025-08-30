@@ -2,18 +2,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] LevelManager levelManager;
-    [SerializeField] AnomalyManager anomalyManager;
-    PlayerManager PlayerManager;
-    UiManager uiManager;
+    public static GameManager instance{ get; private set; }
 
-    private void Start()
-    {
-        anomalyManager.finishTime = levelManager.finishTime;
-    }
+    public LevelManager levelManager;
+    public AnomalyManager anomalyManager;
+    public PlayerManager playerManager;
+    public UiManager uiManager;
+    public CutsceneManager cutSceneManager;
 
-    private void Update()
+    private void Awake()
     {
-        anomalyManager.currentTime = levelManager.currentTime;
+        if (instance != null)
+        {
+            Debug.LogError("Found more than one Game Events Manager in the scene.");
+        }
+        instance = this;
     }
 }

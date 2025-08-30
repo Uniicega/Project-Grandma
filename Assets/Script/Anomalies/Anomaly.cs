@@ -23,21 +23,16 @@ public abstract class Anomaly: MonoBehaviour
     protected bool isHighlighted = false; 
     
     protected GameObject playerCam;
-    protected PlayerManager playerManager;
-    protected float nodeValue = 0;
+
 
     private void OnEnable()
     {
         playerCam = GameObject.FindGameObjectWithTag("Player");
-        playerManager = FindAnyObjectByType<PlayerManager>();
 
         GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly += StartHoldingAnomaly;
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly += UndoAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight += PressHighlight;
-        GameEventsManager.instance.debugEvents.onActivateAllAnomalies += ActivateAllAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateLightAnomalies += ActivateLightAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies += ActivateHeavyAnomalies;    
     }
 
     private void OnDisable()
@@ -46,9 +41,6 @@ public abstract class Anomaly: MonoBehaviour
         GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly -= StartHoldingAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight -= PressHighlight;
-        GameEventsManager.instance.debugEvents.onActivateAllAnomalies -= ActivateAllAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateLightAnomalies -= ActivateLightAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies -= ActivateHeavyAnomalies;
     }
 
     protected void Update()
@@ -62,13 +54,11 @@ public abstract class Anomaly: MonoBehaviour
     private void OnMouseEnter()
     {
         mouseIsOver = true;
-        playerManager.currentAnomaly = this;
     }
 
     private void OnMouseExit()
     {
         mouseIsOver = false;
-        playerManager.currentAnomaly = null;
     }
 
     public bool SpawnAnomaly()
@@ -86,7 +76,7 @@ public abstract class Anomaly: MonoBehaviour
 
     public abstract void TriggerAnomaly();
 
-    public abstract void UndoAnomaly(string id);
+    public abstract void UndoAnomaly(Anomaly anomaly);
 
     public void StartHoldingAnomaly()
     {
@@ -101,9 +91,8 @@ public abstract class Anomaly: MonoBehaviour
     {
         Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
         float dot = Vector3.Dot(dir, playerCam.transform.forward);
-        nodeValue = dot;
 
-        if (nodeValue >= 0.6)
+        if (dot >= 0.6)
         {
             return false;
         }

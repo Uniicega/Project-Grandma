@@ -12,11 +12,9 @@ public class Incense : MonoBehaviour
     private Vector3 initialDistance;
     private float distance;
     public float incensePercentage;
-    private PlayerManager playerManager;
 
     private void Start()
     {
-        playerManager = FindAnyObjectByType<PlayerManager>();
         initialScale = incenseStick.transform.localScale;
         initialDistance = (endObject.transform.position - startObject.transform.position);
         endObject.transform.position = startObject.transform.position + (initialDistance * incensePercentage);
@@ -47,14 +45,4 @@ public class Incense : MonoBehaviour
 
     }
 
-    private void OnMouseEnter()
-    {
-        playerManager.isLookingAtIncense = true;
-    }
-
-    private void OnMouseExit()
-    {
-        playerManager.isLookingAtIncense = false;
-
-    }
 }

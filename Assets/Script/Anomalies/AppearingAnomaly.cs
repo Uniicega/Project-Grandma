@@ -18,7 +18,7 @@ public class AppearingAnomaly : Anomaly
         gameObject.GetComponent<MeshRenderer>().enabled = true; //Make the object appear
     }
 
-    public override void UndoAnomaly(string id)
+    public override void UndoAnomaly(Anomaly anomaly)
     {
         if(undoValid)
         {

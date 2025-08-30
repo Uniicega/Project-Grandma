@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerCam : MonoBehaviour
+public class PlayerCamera : MonoBehaviour
 {
     public float sensX;
     public float sensY;
@@ -10,11 +10,6 @@ public class PlayerCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
 
     private void Update()
     {

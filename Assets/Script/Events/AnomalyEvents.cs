@@ -3,10 +3,10 @@ using System;
 
 public class AnomalyEvents
 {
-    public event Action<string> onUndoAnomaly;
-    public void UndoAnomaly (string name)
+    public event Action<Anomaly> onUndoAnomaly;
+    public void UndoAnomaly (Anomaly anomaly)
     {
-        onUndoAnomaly?.Invoke (name);
+        onUndoAnomaly?.Invoke (anomaly);
     }
 
     public event Action onStartHoldingAnomaly;

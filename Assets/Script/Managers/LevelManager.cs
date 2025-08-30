@@ -9,7 +9,7 @@ public class LevelManager : MonoBehaviour
 {
     [Header("Level Config")]
     public float currentTime;
-    [SerializeField] private float midnightTime = 120;
+    public float midnightTime = 120;
     public float finishTime = 360;
     [SerializeField] public int timeSpeed = 1;
 
@@ -20,13 +20,9 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private int incenseSection;
     [SerializeField] private int maxIncenseSection;
 
-    public TextMeshProUGUI timeDisplay;
-    public TextMeshProUGUI debugMessage;
     public GameObject VictoryMessage;
     public GameObject DefeatMessage;
 
-    int hour;
-    int minute;
     float size;
 
 
@@ -50,11 +46,12 @@ public class LevelManager : MonoBehaviour
     private void Update()
     {
         UpdateTime();
-        DisplayTime();
-
         SetIncenseSize();
         CheckVictory();
         CheckDefeat();
+
+        GameManager.instance.anomalyManager.CheckEnemyEvent();
+        GameManager.instance.anomalyManager.TallyAnomalyPoint();
     }
 
     private void UpdateTime()
@@ -62,29 +59,21 @@ public class LevelManager : MonoBehaviour
         currentTime += Time.deltaTime * timeSpeed;
         incenseCurrentTime -=  Time.deltaTime * timeSpeed;
     }
-
-    private void DisplayTime()
+    private void CheckVictory()
     {
-        if (currentTime < midnightTime)
+        if (currentTime >= finishTime)
         {
-            hour = 22 + (int)Math.Floor(currentTime / 60);
+            VictoryMessage.SetActive(true);
+            Time.timeScale = 0;
         }
-        else if (currentTime >= midnightTime)
-        {
-            hour = (int)Math.Floor((currentTime - 120) / 60);
-        }
-        minute = (int)Math.Floor(currentTime % 60 / 10);
+    }
 
-
-        if (currentTime < midnightTime)
+    private void CheckDefeat()
+    {
+        if (incenseCurrentTime <= 0)
         {
-            timeDisplay.text = hour.ToString() + " : " + minute.ToString() + "0";
+            Debug.Log("Defeat");
         }
-        else if (currentTime >= midnightTime)
-        {
-            timeDisplay.text = "0" + hour.ToString() + " : " + minute.ToString() + "0";
-        }
-        
     }
 
     //---------------------Incense functions----------------------------
@@ -120,22 +109,7 @@ public class LevelManager : MonoBehaviour
     //----------------------------------------------------------------
     
 
-    private void CheckVictory()
-    {
-        if(currentTime >= finishTime)
-        {
-            VictoryMessage.SetActive(true);
-            Time.timeScale = 0;
-        }
-    }
-
-    private void CheckDefeat()
-    {
-        if(incenseCurrentTime <= 0)
-        {
-            Debug.Log("Defeat");
-        }
-    }
+    
 
 
 }

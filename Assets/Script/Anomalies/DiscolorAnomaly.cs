@@ -19,7 +19,7 @@ public class DiscolorAnomaly : Anomaly
         gameObject.GetComponent<MeshRenderer>().material = discolorMaterial; //Make the object appear
     }
 
-    public override void UndoAnomaly(string id)
+    public override void UndoAnomaly(Anomaly anomaly)
     {
         if (undoValid)
         {

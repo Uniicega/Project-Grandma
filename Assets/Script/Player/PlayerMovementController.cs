@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovementController : MonoBehaviour
 {
     [Header("Movement")]
     public float moveSpeed;
@@ -18,7 +18,19 @@ public class PlayerMovement : MonoBehaviour
     float verticalInput;
 
     Vector3 moveDirection;
+    Vector2 inputDir;
     Rigidbody rb;
+
+    private void OnEnable()
+    {
+        GameEventsManager.instance.inputEvents.onMovePressed += MovePressed;
+    }
+
+    private void OnDisable()
+    {
+        GameEventsManager.instance.inputEvents.onMovePressed -= MovePressed;
+
+    }
 
     private void Start()
     {
@@ -28,23 +40,23 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        HandleMovementInput();
+        //HandleMovementInput();
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
-    }
-
-    private void HandleMovementInput()
-    {
-        horizontalInput = Input.GetAxisRaw("Horizontal");
-        verticalInput = Input.GetAxisRaw("Vertical");
+        
     }
 
     private void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
-        rb.AddForce(moveDirection.normalized * moveSpeed * 10, ForceMode.Force);
+        moveDirection = orientation.forward * inputDir.y + orientation.right * inputDir.x;
+        rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Force);
+    }
+
+    private void MovePressed(Vector2 moveDir)
+    {
+        inputDir = moveDir;
     }
 }

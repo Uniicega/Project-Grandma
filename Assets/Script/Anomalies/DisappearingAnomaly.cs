@@ -19,7 +19,7 @@ public class DisappearingAnomaly : Anomaly
         gameObject.GetComponent<MeshRenderer>().enabled = false; //Make the object disappear      
     }
 
-    public override void UndoAnomaly(string id)
+    public override void UndoAnomaly(Anomaly anomaly)
     {
         if(undoValid)
         {

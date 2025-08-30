@@ -16,9 +16,9 @@ public class AnomalySequence : Anomaly
         Debug.Log("Trigger Anomaly List: " + this.name + index);
     }
 
-    public override void UndoAnomaly(string name)
+    public override void UndoAnomaly(Anomaly anomaly)
     {  
-        if(name == anomalyList[index].name)
+        if(anomaly == anomalyList[index])
         {
             index++;
             if(anomalyList[index] != null)
