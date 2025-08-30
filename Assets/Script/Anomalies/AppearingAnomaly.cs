@@ -6,6 +6,7 @@ public class AppearingAnomaly : Anomaly
     {
         originalMaterial = GetComponent<MeshRenderer>().material; //Save default object material
         gameObject.GetComponent<MeshRenderer>().enabled = false;
+        gameObject.GetComponent<Collider>().enabled = false;
     }
 
     public override void TriggerAnomaly()
@@ -16,15 +17,18 @@ public class AppearingAnomaly : Anomaly
         currentAnomalyPoint = anomalyPointValue;
 
         gameObject.GetComponent<MeshRenderer>().enabled = true; //Make the object appear
+        gameObject.GetComponent<Collider>().enabled = true; //Make the object appear
     }
 
     public override void UndoAnomaly(Anomaly anomaly)
     {
-        if(undoValid)
+        if (anomaly == this && isActive)
         {
             gameObject.GetComponent<MeshRenderer>().enabled = false; //Make anomaly dissapear
+            gameObject.GetComponent<Collider>().enabled = false;
+
             currentAnomalyPoint = 0;
             isActive = false;
-        }       
+        }
     }
 }

@@ -34,7 +34,10 @@ public class TestEnemy2 : MonoBehaviour
         else
         {
             currentCooldown -= Time.deltaTime;
-            currentGrace -= Time.deltaTime;
+            if(currentGrace >= 0)
+            {
+                currentGrace -= Time.deltaTime;
+            }      
         }
     }
 
@@ -42,25 +45,28 @@ public class TestEnemy2 : MonoBehaviour
     {
         anomalyPoint = anomalyManager.TallyAnomalyPoint();
 
-        if (difficultyLevel >= Random.Range(0, 20))
+        if (difficultyLevel >= Random.Range(0, 20) && currentGrace <= 0)
         {
-            if (anomalyPoint >= attackThreashhold && currentGrace <= 0)
+            if (anomalyPoint >= attackThreashhold)
             {
                 AttackPlayer();
             }
             else if (anomalyPoint >= heavyAnomalyThreshhold)
             {
-                if (!anomalyManager.TriggerRandomHeavyAnomaly())
+                if (!anomalyManager.SpawnRandomHeavyAnomaly())
+                {
                     currentCooldown = 0;
-                else currentCooldown = cooldownDuration;
+                    return;
+                }    
             }
             else
             {
-                if (!anomalyManager.TriggerRandomLightAnomaly())
+                if (!anomalyManager.SpawnRandomLightAnomaly())
+                {
                     currentCooldown = 0;
-                else currentCooldown = cooldownDuration;
+                    return ;
+                }
             }
-            return;
         }
         currentCooldown = cooldownDuration;
     }

@@ -8,28 +8,37 @@ public class AnomalySequence : Anomaly
     [SerializeField] private List<Anomaly> anomalyList;
     [SerializeField] float[] delayTime;
 
-    private int index = 0;
+    public int index = 0;
 
     public override void TriggerAnomaly()
     {
         anomalyList[index].TriggerAnomaly();
-        Debug.Log("Trigger Anomaly List: " + this.name + index);
+        Debug.Log("Trigger Anomaly Sequence: " + this.name + index);
+        isActive = true;
+        cooldown = cooldownTimer;
+        currentAnomalyPoint = anomalyPointValue;
     }
 
     public override void UndoAnomaly(Anomaly anomaly)
-    {  
-        if(anomaly == anomalyList[index])
+    {
+        if (index >= anomalyList.Count )
         {
+            return;
+        }
+        if (anomaly == anomalyList[index] && isActive)
+        {               
+            currentAnomalyPoint = 0;
+            isActive = false;
             index++;
-            if(anomalyList[index] != null)
+            if( index >= anomalyList.Count)
             {
-                Invoke("ContinueAnomaly", delayTime[index]);
+                index = 0;
             }
             else
             {
-                Debug.LogWarning("Anomaly Sequence List Index OutOfRange: " + this.name);
-            }
-        }
+                Invoke("ContinueAnomaly", delayTime[index]);
+            }            
+        }       
     }
 
     private void ContinueAnomaly()
@@ -37,6 +46,8 @@ public class AnomalySequence : Anomaly
         if (index <= anomalyList.Count)
         {
             anomalyList[index].TriggerAnomaly();
+            isActive = true;
+            currentAnomalyPoint = anomalyPointValue;
         }
     }
 }

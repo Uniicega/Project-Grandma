@@ -12,6 +12,7 @@ public class UiManager : MonoBehaviour
     public float silderMaxValue;
 
     public TextMeshProUGUI timeDisplay;
+    public TextMeshProUGUI anomalyPointDisplay;
     int hour;
     int minute;
     float currentTime;
@@ -52,6 +53,7 @@ public class UiManager : MonoBehaviour
     private void Update()
     {
         anomalySlider.value = GameManager.instance.playerManager.interactProgression;
+        anomalyPointDisplay.text = GameManager.instance.anomalyManager.TallyAnomalyPoint().ToString();
         DisplayTime();
     }
 

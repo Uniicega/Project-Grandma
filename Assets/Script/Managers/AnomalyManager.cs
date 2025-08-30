@@ -51,7 +51,7 @@ public class AnomalyManager : MonoBehaviour
         }
     }
 
-    public bool TriggerRandomLightAnomaly()//Randomly trigger a light anomaly
+    public bool SpawnRandomLightAnomaly()//Randomly trigger a light anomaly
     {
         int random = Random.Range(0, LightAnomalies.Count);
         if(LightAnomalies.Count > 0)
@@ -67,7 +67,7 @@ public class AnomalyManager : MonoBehaviour
         return false;
     }
 
-    public bool TriggerRandomHeavyAnomaly()//Randomly trigger a light anomaly
+    public bool SpawnRandomHeavyAnomaly()//Randomly trigger a light anomaly
     {
         int random = Random.Range(0, HeavyAnomalies.Count);
         if(HeavyAnomalies.Count > 0)
@@ -95,8 +95,8 @@ public class AnomalyManager : MonoBehaviour
 
     private void UndoAnomaly(Anomaly anomaly)
     {
-        if(!ActiveAnomalies.Contains(anomaly))
-            { return; }
+        if (!ActiveAnomalies.Contains(anomaly))
+        { return; }
 
         if (anomaly.anomalyEnum == AnomalyEnum.LightAnomaly)
         {
@@ -106,6 +106,10 @@ public class AnomalyManager : MonoBehaviour
         else if (anomaly.anomalyEnum == AnomalyEnum.HeavyAnomaly)
         {
             HeavyAnomalies.Add(anomaly);
+        }
+        else if (anomaly.anomalyEnum == AnomalyEnum.PartOfSequence)
+        {
+
         }
         else
         {
@@ -128,6 +132,10 @@ public class AnomalyManager : MonoBehaviour
                 else if (anomaly.anomalyEnum == AnomalyEnum.HeavyAnomaly)
                 {
                     HeavyAnomalies.Add(anomaly);
+                }
+                else if (anomaly.anomalyEnum == AnomalyEnum.PartOfSequence)
+                {
+
                 }
                 else
                 {

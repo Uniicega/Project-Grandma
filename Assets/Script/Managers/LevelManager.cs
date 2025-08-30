@@ -72,7 +72,8 @@ public class LevelManager : MonoBehaviour
     {
         if (incenseCurrentTime <= 0)
         {
-            Debug.Log("Defeat");
+            DefeatMessage.SetActive(true);
+            Time.timeScale = 0;
         }
     }
 

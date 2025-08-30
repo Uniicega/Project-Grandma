@@ -21,11 +21,11 @@ public class DisappearingAnomaly : Anomaly
 
     public override void UndoAnomaly(Anomaly anomaly)
     {
-        if(undoValid)
+        if(anomaly == this && isActive)
         {
             gameObject.GetComponent<MeshRenderer>().enabled = true; //Make anomaly appear back to normal
             currentAnomalyPoint = 0;
             isActive = false;
-        }     
+        }       
     }
 }

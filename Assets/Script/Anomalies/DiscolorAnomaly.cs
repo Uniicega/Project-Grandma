@@ -21,11 +21,11 @@ public class DiscolorAnomaly : Anomaly
 
     public override void UndoAnomaly(Anomaly anomaly)
     {
-        if (undoValid)
+        if(anomaly == this && isActive)
         {
             gameObject.GetComponent<MeshRenderer>().material = originalMaterial; //Make anomaly dissapear
             currentAnomalyPoint = 0;
             isActive = false;
-        }
+        }  
     }
 }

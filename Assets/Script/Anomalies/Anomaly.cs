@@ -9,11 +9,9 @@ public abstract class Anomaly: MonoBehaviour
     public int cooldownTimer = 10;
 
     [Header("Anomaly State")]
-    [SerializeField] protected bool isActive;
+    public bool isActive;
     public int currentAnomalyPoint;
 
-    protected bool mouseIsOver = false;
-    protected bool undoValid;
     protected float cooldown;
 
     protected Material originalMaterial;
@@ -29,7 +27,6 @@ public abstract class Anomaly: MonoBehaviour
     {
         playerCam = GameObject.FindGameObjectWithTag("Player");
 
-        GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly += StartHoldingAnomaly;
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly += UndoAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight += PressHighlight;
@@ -38,7 +35,6 @@ public abstract class Anomaly: MonoBehaviour
     private void OnDisable()
     {
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly -= UndoAnomaly;
-        GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly -= StartHoldingAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight -= PressHighlight;
     }
@@ -49,16 +45,6 @@ public abstract class Anomaly: MonoBehaviour
         {
             cooldown -= Time.deltaTime;
         }
-    }
-
-    private void OnMouseEnter()
-    {
-        mouseIsOver = true;
-    }
-
-    private void OnMouseExit()
-    {
-        mouseIsOver = false;
     }
 
     public bool SpawnAnomaly()
@@ -78,21 +64,13 @@ public abstract class Anomaly: MonoBehaviour
 
     public abstract void UndoAnomaly(Anomaly anomaly);
 
-    public void StartHoldingAnomaly()
-    {
-        if (mouseIsOver)
-        {
-            undoValid = true;
-        }
-        else { undoValid = false; }
-    }
 
     public bool CheckPlayerIsNotLooking() //Calculate if the player is looking at the node or not
     {
         Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
         float dot = Vector3.Dot(dir, playerCam.transform.forward);
 
-        if (dot >= 0.6)
+        if (dot >= 0.5)
         {
             return false;
         }

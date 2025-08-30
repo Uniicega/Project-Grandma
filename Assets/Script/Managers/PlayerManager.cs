@@ -60,7 +60,7 @@ public class PlayerManager : MonoBehaviour
 
     private void UpdateInteractValue()
     {
-        interactProgression += Time.deltaTime;
+        
 
         if (interactProgression >= maxProgression) //If timer is complete and is still active (this is to stop the slider from reactivating again without letting go of the mouse)
         {
@@ -75,6 +75,10 @@ public class PlayerManager : MonoBehaviour
             GameEventsManager.instance.playerEvents.CompleteInteract();
             isHoldingFixAnomaly = false;
             isLighting = false;
+        }
+        else
+        {
+            interactProgression += Time.deltaTime;
         }
     }
 
