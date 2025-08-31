@@ -72,10 +72,19 @@ public abstract class Anomaly: MonoBehaviour
 
         if (dot >= 0.5)
         {
-            return false;
+            if (Physics.Raycast(playerCam.transform.position, transform.position - playerCam.transform.position, out RaycastHit hit, Mathf.Infinity, (1 - 6)))
+            {
+                Debug.DrawLine(playerCam.transform.position, hit.point, Color.yellow);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         else
         {
+            
             return true;
         }
     }
