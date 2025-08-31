@@ -13,7 +13,6 @@ public class Incense : MonoBehaviour
     private float distance;
     public float incensePercentage;
 
-
     private void Start()
     {
         initialScale = incenseStick.transform.localScale;

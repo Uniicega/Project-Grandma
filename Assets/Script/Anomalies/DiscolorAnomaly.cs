@@ -2,73 +2,30 @@ using UnityEngine;
 
 public class DiscolorAnomaly : Anomaly
 {
-    [Header("Config")]
-    public int cooldownTimer = 10;
-
     public Material discolorMaterial;
-    public bool mouseIsOver = false;
-    public bool undoValid;
-    public float cooldown;
-
 
     private void Start()
     {
         originalMaterial = GetComponent<MeshRenderer>().material; //Save default object material
     }
 
-    private void Update()
+    public override void TriggerAnomaly()
     {
-        if (cooldown > 0) //Counting down the cooldown
-        {
-            cooldown -= Time.deltaTime;
-        }
+        Debug.Log("Triggered Discolor Anomaly: " + this.name);
+        isActive = true;
+        cooldown = cooldownTimer;
+        currentAnomalyPoint = anomalyPointValue;
+
+        gameObject.GetComponent<MeshRenderer>().material = discolorMaterial; //Make the object appear
     }
 
-    private void OnMouseEnter()
+    public override void UndoAnomaly(Anomaly anomaly)
     {
-        mouseIsOver = true;
-    }
-
-    private void OnMouseExit()
-    {
-        mouseIsOver = false;
-    }
-
-    public override bool TriggerAnomaly()
-    {
-        if (cooldown <= 0 && !isActive) //Check if not in cooldown and not already actived
-        {
-            isActive = true; //Keep track of when it's active
-            Debug.Log("Triggered discoloring anomaly");
-
-            gameObject.GetComponent<MeshRenderer>().material = discolorMaterial; //Make the object appear
-            cooldown += cooldownTimer; //Add cooldown
-            currentAnomalyPoint = anomalyValue; //Increase the anomaly point to the set value
-            Debug.Log("Added anomaly point: " + currentAnomalyPoint);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public override void UndoAnomaly()
-    {
-        if (undoValid)
+        if(anomaly == this && isActive)
         {
             gameObject.GetComponent<MeshRenderer>().material = originalMaterial; //Make anomaly dissapear
-            currentAnomalyPoint = 0; //Remove anomaly point
+            currentAnomalyPoint = 0;
             isActive = false;
-        }
-    }
-
-    public override void StartHoldingAnomaly()
-    {
-        if (mouseIsOver)
-        {
-            undoValid = true;
-        }
-        else { undoValid = false; }
+        }  
     }
 }

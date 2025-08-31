@@ -1,62 +1,125 @@
+using TMPro;
 using UnityEngine;
 
 public abstract class Anomaly: MonoBehaviour
 {
-    //Abstract class for anomalies
     [Header("Anomaly Config")]
-    public bool lightAnomaly;
-    public bool heavyAnomaly;
+    public AnomalyEnum anomalyEnum;
+    public int anomalyPointValue;
+    public int cooldownTimer = 10;
+
+    [Header("Anomaly State")]
+    public bool isActive;
     public int currentAnomalyPoint;
-    public int anomalyValue;
-    protected bool isActive;
+
+    protected float cooldown;
 
     protected Material originalMaterial;
     protected Material currentMaterial;
     protected bool currentMeshActive;
     public Material highlightMaterial;
-    protected bool isHighlighted = false;
+    protected bool isHighlighted = false; 
+    
+    protected GameObject playerCam;
+
 
     private void OnEnable()
     {
-        Invoke("SubscribeToEvents", 0.1f);
-    }
+        playerCam = GameObject.FindGameObjectWithTag("Player");
 
-    private void SubscribeToEvents()
-    {
-        GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly += StartHoldingAnomaly;
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly += UndoAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight += PressHighlight;
-        GameEventsManager.instance.debugEvents.onActivateAllAnomalies += ActivateAllAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateLightAnomalies += ActivateLightAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies += ActivateHeavyAnomalies;
-        Debug.Log("Subscribe to game events");
     }
 
     private void OnDisable()
     {
         GameEventsManager.instance.anomalyEvents.onUndoAnomaly -= UndoAnomaly;
-        GameEventsManager.instance.anomalyEvents.onStartHoldingAnomaly -= StartHoldingAnomaly;
 
         GameEventsManager.instance.debugEvents.onPressHighlight -= PressHighlight;
-        GameEventsManager.instance.debugEvents.onActivateAllAnomalies -= ActivateAllAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateLightAnomalies -= ActivateLightAnomalies;
-        GameEventsManager.instance.debugEvents.onActivateHeavyAnomalies -= ActivateHeavyAnomalies;
     }
 
-    public abstract bool TriggerAnomaly();
+    protected void Update()
+    {
+        if (cooldown > 0) //Counting down the cooldown
+        {
+            cooldown -= Time.deltaTime;
+        }
+    }
 
-    public abstract void UndoAnomaly();
+    public bool SpawnAnomaly()
+    {
+        if (cooldown <= 0 && !isActive && CheckPlayerIsNotLooking()) //Check if not in cooldown and not already actived
+        {
+            TriggerAnomaly();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
-    public abstract void StartHoldingAnomaly();
+    public abstract void TriggerAnomaly();
+
+    public abstract void UndoAnomaly(Anomaly anomaly);
+
+
+    public bool CheckPlayerIsNotLooking() //Calculate if the player is looking at the node or not
+    {
+        Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
+        float dot = Vector3.Dot(dir, playerCam.transform.forward);
+
+        if (dot >= 0.5)
+        {
+            if (Physics.Raycast(playerCam.transform.position, transform.position - playerCam.transform.position, out RaycastHit hit, Mathf.Infinity, (1 - 6)))
+            {
+                Debug.DrawLine(playerCam.transform.position, hit.point, Color.yellow);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            
+            return true;
+        }
+    }
+    
+
+    //---------------------Debug functions ------------------------------
+
+    public void ActivateLightAnomalies()
+    {
+        if (anomalyEnum == AnomalyEnum.HeavyAnomaly)
+        {
+            SpawnAnomaly();
+        }
+    }
+
+    public void ActivateHeavyAnomalies()
+    {
+        if (anomalyEnum == AnomalyEnum.HeavyAnomaly)
+        {
+            SpawnAnomaly();
+        }
+    }
+
+    public void ActivateAllAnomalies()
+    {
+        SpawnAnomaly();
+    }
 
     public void PressHighlight()
     {
-        if(!isHighlighted && isActive)
+        if (!isHighlighted && isActive)
         {
             isHighlighted = true;
             currentMeshActive = GetComponent<MeshRenderer>().enabled;
-            if(!currentMeshActive )
+            if (!currentMeshActive)
             {
                 gameObject.GetComponent<MeshRenderer>().enabled = true;
             }
@@ -64,33 +127,12 @@ public abstract class Anomaly: MonoBehaviour
             currentMaterial = GetComponent<MeshRenderer>().material;
             gameObject.GetComponent<MeshRenderer>().material = highlightMaterial;
         }
-        else if(isHighlighted)
+        else if (isHighlighted)
         {
             isHighlighted = false;
             gameObject.GetComponent<MeshRenderer>().material = currentMaterial;
-            gameObject.GetComponent <MeshRenderer>().enabled = currentMeshActive;
+            gameObject.GetComponent<MeshRenderer>().enabled = currentMeshActive;
             Debug.Log(this.gameObject.name + "mesh state was : " + currentMeshActive);
-        }
-    }
-
-    public void ActivateAllAnomalies()
-    {
-        TriggerAnomaly();
-    }
-
-    public void ActivateLightAnomalies()
-    {
-        if (lightAnomaly)
-        {
-            TriggerAnomaly();
-        }
-    }
-
-    public void ActivateHeavyAnomalies()
-    {
-        if (heavyAnomaly)
-        {
-            TriggerAnomaly();
         }
     }
 }

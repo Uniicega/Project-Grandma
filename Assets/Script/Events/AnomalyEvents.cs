@@ -3,58 +3,47 @@ using System;
 
 public class AnomalyEvents
 {
-    public event Action onUndoAnomaly;
-    public void UndoAnomaly ()
+    public event Action<Anomaly> onUndoAnomaly;
+    public void UndoAnomaly (Anomaly anomaly)
     {
-        if (onUndoAnomaly != null)
-        {
-            onUndoAnomaly();
-        }
+        onUndoAnomaly?.Invoke (anomaly);
     }
 
     public event Action onStartHoldingAnomaly;
     public void StartHoldingAnomaly ()
     {
-        if (onStartHoldingAnomaly != null)
-        {
-            onStartHoldingAnomaly();
-        }
+        onStartHoldingAnomaly?.Invoke ();
     }
 
     public event Action onTriggerLightAnomaly;
     public void TriggerLightAnomaly()
     {
-        if (onTriggerLightAnomaly != null)
-        {
-            onTriggerLightAnomaly();
-        }
+        onTriggerLightAnomaly?.Invoke ();
     }
 
     public event Action onTriggerHeavyAnomaly;
     public void TriggerHeavyAnomaly()
     {
-        if (onTriggerHeavyAnomaly != null)
-        {
-            onTriggerHeavyAnomaly();
-        }
+        onTriggerHeavyAnomaly?.Invoke ();
     }
 
     public event Action onTriggerAttackAnomaly;
     public void TriggerAttackAnomaly()
     {
-        if (onTriggerAttackAnomaly != null)
-        {
-            onTriggerAttackAnomaly();
-        }
+        onTriggerAttackAnomaly?.Invoke ();
     }
+
+    public event Action onSnapIncense;
+    public void SnapIncense()
+    {
+        onSnapIncense?.Invoke ();
+    }
+    //-------------------------------------------------------
 
     public event Action onTriggerChasedAnomaly;
     public void TriggerChasedAnomaly()
     {
-        if (onTriggerChasedAnomaly != null)
-        {
-            onTriggerChasedAnomaly();
-        }
+        onTriggerChasedAnomaly?.Invoke ();
     }
 
     public event Action onFinishPraying;

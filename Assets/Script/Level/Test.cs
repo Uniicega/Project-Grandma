@@ -2,8 +2,20 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public void Press()
+    public Renderer m_Renderer;
+    // Use this for initialization
+    void Start()
     {
-        Debug.Log("Pressed");
+        m_Renderer = GetComponent<Renderer>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (m_Renderer.isVisible)
+        {
+            Debug.Log("Object is visible");
+        }
+        else Debug.Log("Object is no longer visible");
     }
 }
