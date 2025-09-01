@@ -46,7 +46,7 @@ public class TestEnemy2 : MonoBehaviour
         anomalyPoint = anomalyManager.TallyAnomalyPoint();
 
         if (difficultyLevel >= Random.Range(0, 20) && currentGrace <= 0)
-        {
+        { 
             if (anomalyPoint >= attackThreashhold)
             {
                 AttackPlayer();
