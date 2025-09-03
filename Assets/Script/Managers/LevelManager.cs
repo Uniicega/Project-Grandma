@@ -23,6 +23,7 @@ public class LevelManager : MonoBehaviour
     public GameObject VictoryMessage;
     public GameObject DefeatMessage;
 
+    bool isDefeated;
     float size;
 
 
@@ -70,11 +71,18 @@ public class LevelManager : MonoBehaviour
 
     private void CheckDefeat()
     {
-        if (incenseCurrentTime <= 0)
+        if (incenseCurrentTime <= 0 && !isDefeated)
         {
-            DefeatMessage.SetActive(true);
-            Time.timeScale = 0;
+            isDefeated = true;
+            timeSpeed = 0;
+            GameEventsManager.instance.levelEvents.PlayerDefeated();
         }
+    }
+
+    public void FinishedDefeatAnim()
+    {
+        DefeatMessage.SetActive(true);
+        Time.timeScale = 0;
     }
 
     //---------------------Incense functions----------------------------

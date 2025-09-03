@@ -9,6 +9,7 @@ public class TestEnemy2 : MonoBehaviour
     public int attackThreashhold;
     public float cooldownDuration;
     public float graceDuration;
+    [SerializeField] GameObject ghostPrefab;
 
     [Header("State")]
     [SerializeField] private float currentCooldown;
@@ -17,8 +18,18 @@ public class TestEnemy2 : MonoBehaviour
     [SerializeField] private int anomalyPoint;
 
     private AnomalyManager anomalyManager;
-    
-    
+
+    private void OnEnable()
+    {
+        GameEventsManager.instance.anomalyEvents.onUndoAnomaly += CheckFinishAttackAnomaly;
+        GameEventsManager.instance.levelEvents.onPlayerDefeated += StartJumpscare;
+    }
+    private void OnDisable()
+    {
+        GameEventsManager.instance.anomalyEvents.onUndoAnomaly -= CheckFinishAttackAnomaly;
+        GameEventsManager.instance.levelEvents.onPlayerDefeated -= StartJumpscare;
+
+    }
 
     private void Start()
     {
@@ -49,8 +60,10 @@ public class TestEnemy2 : MonoBehaviour
         { 
             if (anomalyPoint >= attackThreashhold)
             {
-                AttackPlayer();
+                anomalyManager.SpawnRandomAttackAnomaly();
+                currentGrace = graceDuration;
             }
+
             else if (anomalyPoint >= heavyAnomalyThreshhold)
             {
                 if (!anomalyManager.SpawnRandomHeavyAnomaly())
@@ -71,9 +84,20 @@ public class TestEnemy2 : MonoBehaviour
         currentCooldown = cooldownDuration;
     }
 
-    private void AttackPlayer()
+    private void CheckFinishAttackAnomaly(Anomaly anomaly)
     {
-        GameEventsManager.instance.anomalyEvents.SnapIncense();
-        currentGrace = graceDuration;
+        if(anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+        {
+            GameEventsManager.instance.anomalyEvents.SnapIncense();
+            GameManager.instance.anomalyManager.UndoAllAnomaly();
+            currentGrace = graceDuration;
+        }
     }
+
+    private void StartJumpscare()
+    {
+        GameObject ghost = Instantiate(ghostPrefab, transform.position, Quaternion.identity);
+        ghost.GetComponent<ChaseJumpscareHandler>().StartJumpscare();
+    }
+
 }

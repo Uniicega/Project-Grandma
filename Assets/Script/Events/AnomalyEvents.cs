@@ -38,6 +38,25 @@ public class AnomalyEvents
     {
         onSnapIncense?.Invoke ();
     }
+
+    public event Action onStartJumpscare;
+    public void StartJumpscare()
+    {
+        onStartJumpscare?.Invoke ();
+    }
+
+    public event Action onFinishJumpscare;
+    public void FinishJumpscare()
+    {
+        onFinishJumpscare?.Invoke ();
+    }
+
+    public event Action<string> onFinishAnimationEvent;
+    public void FinishAnimationEvent(string name)
+    {
+        onFinishAnimationEvent?.Invoke(name);
+    }
+
     //-------------------------------------------------------
 
     public event Action onTriggerChasedAnomaly;

@@ -16,6 +16,8 @@ public class AnomalyManager : MonoBehaviour
 
     [SerializeField]private List<Anomaly> LightAnomalies = new List<Anomaly>();
     [SerializeField]private List<Anomaly> HeavyAnomalies = new List<Anomaly>();
+    [SerializeField]private List<Anomaly> AttackAnomalies = new List<Anomaly>();
+
     [SerializeField] private List<Anomaly> ActiveAnomalies = new List<Anomaly>();
 
     private void OnEnable()
@@ -67,7 +69,7 @@ public class AnomalyManager : MonoBehaviour
         return false;
     }
 
-    public bool SpawnRandomHeavyAnomaly()//Randomly trigger a light anomaly
+    public bool SpawnRandomHeavyAnomaly()//Randomly trigger a heavy anomaly
     {
         int random = Random.Range(0, HeavyAnomalies.Count);
         if(HeavyAnomalies.Count > 0)
@@ -77,6 +79,22 @@ public class AnomalyManager : MonoBehaviour
                 GameEventsManager.instance.anomalyEvents.TriggerHeavyAnomaly();
                 ActiveAnomalies.Add(HeavyAnomalies[random]);
                 HeavyAnomalies.RemoveAt(random);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool SpawnRandomAttackAnomaly()//Randomly trigger an attack anomaly
+    {
+        int random = Random.Range(0, AttackAnomalies.Count);
+        if (AttackAnomalies.Count > 0)
+        {
+            if (AttackAnomalies[random].SpawnAnomaly() == true)
+            {
+                GameEventsManager.instance.anomalyEvents.TriggerAttackAnomaly();
+                ActiveAnomalies.Add(AttackAnomalies[random]);
+                AttackAnomalies.RemoveAt(random);
                 return true;
             }
         }
@@ -101,11 +119,15 @@ public class AnomalyManager : MonoBehaviour
         if (anomaly.anomalyEnum == AnomalyEnum.LightAnomaly)
         {
             LightAnomalies.Add(anomaly);
-            ActiveAnomalies.Remove(anomaly);
+            
         }
         else if (anomaly.anomalyEnum == AnomalyEnum.HeavyAnomaly)
         {
             HeavyAnomalies.Add(anomaly);
+        }
+        else if (anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+        {
+            AttackAnomalies.Add(anomaly);
         }
         else if (anomaly.anomalyEnum == AnomalyEnum.PartOfSequence)
         {
@@ -115,6 +137,37 @@ public class AnomalyManager : MonoBehaviour
         {
             Debug.LogWarning("Anomaly Not Assigned Type: " + anomaly.name);
         }
+
+        ActiveAnomalies.Remove(anomaly);
+    }
+
+    public void UndoAllAnomaly()
+    {
+        foreach (Anomaly anomaly in ActiveAnomalies)
+        {
+            if (anomaly.anomalyEnum == AnomalyEnum.LightAnomaly)
+            {
+                LightAnomalies.Add(anomaly);
+
+            }
+            else if (anomaly.anomalyEnum == AnomalyEnum.HeavyAnomaly)
+            {
+                HeavyAnomalies.Add(anomaly);
+            }
+            else if (anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+            {
+                AttackAnomalies.Add(anomaly);
+            }
+            else if (anomaly.anomalyEnum == AnomalyEnum.PartOfSequence)
+            {
+
+            }
+            else
+            {
+                Debug.LogWarning("Anomaly Not Assigned Type: " + anomaly.name);
+            }
+        }
+        ActiveAnomalies.Clear();
     }
 
     private void CreateAnomalyLists()
@@ -133,9 +186,13 @@ public class AnomalyManager : MonoBehaviour
                 {
                     HeavyAnomalies.Add(anomaly);
                 }
+                else if (anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+                {
+                    AttackAnomalies.Add(anomaly);
+                }
                 else if (anomaly.anomalyEnum == AnomalyEnum.PartOfSequence)
                 {
-
+                    
                 }
                 else
                 {

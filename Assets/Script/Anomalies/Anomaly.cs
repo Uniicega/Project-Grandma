@@ -45,6 +45,7 @@ public abstract class Anomaly: MonoBehaviour
         {
             cooldown -= Time.deltaTime;
         }
+        CheckPlayerIsNotLooking();
     }
 
     public bool SpawnAnomaly()
@@ -69,22 +70,25 @@ public abstract class Anomaly: MonoBehaviour
     {
         Vector3 dir = Vector3.Normalize(this.transform.position - playerCam.transform.position);
         float dot = Vector3.Dot(dir, playerCam.transform.forward);
+        float dist = Vector3.Distance(transform.position, playerCam.transform.position);
 
         if (dot >= 0.5)
         {
-            if (Physics.Raycast(playerCam.transform.position, transform.position - playerCam.transform.position, out RaycastHit hit, Mathf.Infinity, (1 - 6)))
+            if (Physics.Raycast(playerCam.transform.position, transform.position - playerCam.transform.position, out RaycastHit hit, dist, (1 << 7)))
             {
                 Debug.DrawLine(playerCam.transform.position, hit.point, Color.yellow);
                 return true;
             }
             else
             {
+                
                 return false;
             }
         }
         else
         {
-            
+            Debug.DrawLine(playerCam.transform.position, transform.position, Color.red);
+
             return true;
         }
     }

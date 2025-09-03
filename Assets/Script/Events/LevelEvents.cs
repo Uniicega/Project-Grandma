@@ -1,16 +1,17 @@
+using System;
 using UnityEngine;
 
 public class LevelEvents
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public event Action onPlayerVictory;
+    public void PlayerVictory()
     {
-        
+        onPlayerVictory?.Invoke();
     }
 
-    // Update is called once per frame
-    void Update()
+    public event Action onPlayerDefeated;
+    public void PlayerDefeated()
     {
-        
+        onPlayerDefeated?.Invoke();
     }
 }

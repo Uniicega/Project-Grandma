@@ -7,7 +7,7 @@ public class SpriteTurner : MonoBehaviour
 
     private void Start()
     {
-        playerCam = GameObject.FindGameObjectWithTag("Player");
+        //playerCam = GameObject.FindGameObjectWithTag("Player");
         transform.Rotate(0, 180, 0);
 
     }
