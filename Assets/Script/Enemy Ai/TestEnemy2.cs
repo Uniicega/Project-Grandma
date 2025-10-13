@@ -66,19 +66,11 @@ public class TestEnemy2 : MonoBehaviour
 
             else if (anomalyPoint >= heavyAnomalyThreshhold)
             {
-                if (!anomalyManager.SpawnRandomHeavyAnomaly())
-                {
-                    currentCooldown = 0;
-                    return;
-                }    
+                anomalyManager.SpawnRandomHeavyAnomaly();
             }
             else
             {
-                if (!anomalyManager.SpawnRandomLightAnomaly())
-                {
-                    currentCooldown = 0;
-                    return ;
-                }
+                anomalyManager.SpawnRandomLightAnomaly();
             }
         }
         currentCooldown = cooldownDuration;
