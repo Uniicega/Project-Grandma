@@ -1,10 +1,14 @@
 using NUnit.Framework;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Game.Database;
 
 public class AnomalyManager : MonoBehaviour
 {
+    [SerializeField] SpreadsheetContainer DataContainer;
+
     [Header("State")]
     public int anomalyPoint;
     public float currentTime;
@@ -12,7 +16,9 @@ public class AnomalyManager : MonoBehaviour
     public AreaEnum currentArea;
 
     [Header("Enemy Event")]
-    public List<TimedEnemyBehavior> enemyEvents = new List<TimedEnemyBehavior>();
+    [SerializeField] TestEnemy2 enemy;
+    public List<LevelData> timedLevelUpdate;
+    public List<LevelAnomalyData> timedAnomalyUpdate;
     int eventIndex = 0;
     float nextEventTime;
 
@@ -35,23 +41,44 @@ public class AnomalyManager : MonoBehaviour
     private void Start()
     {
         CreateAreaAnomalyDict();
+        timedLevelUpdate = DataContainer.Content.levelConfigs;
+        timedAnomalyUpdate = DataContainer.Content.AnomalyConfig;
+        foreach (LevelAnomalyData data in timedAnomalyUpdate)
+        {
+            data.CreateList();
+        }
     }
 
-    public void CheckEnemyEvent()
-    {
-        if(enemyEvents != null)
+    public void CheckEnemyEvent(float currentTime)
+    {  
+        if(timedLevelUpdate[eventIndex] != null)
         {
-            if (eventIndex < enemyEvents.Count)
+            if (nextEventTime <= currentTime)
             {
-                if (nextEventTime <= currentTime)
-                {
-                    enemyEvents[eventIndex].UpdateEnemyAI(); //Update enemy Ai using method in EnemyEvent class
-                    eventIndex++;
-                    nextEventTime = enemyEvents[eventIndex].eventTime;
-                    Debug.Log("Change enemy AI at time: " + currentTime);
-                }
+                UpdateLevelData(timedLevelUpdate[eventIndex]);//Update enemy Ai 
+                UpdateAnomalies(timedAnomalyUpdate[eventIndex]);
+                eventIndex++;
+                nextEventTime = timedLevelUpdate[eventIndex].Time;
+                Debug.Log("Change enemy AI at time: " + currentTime);
+                Debug.Log("Next enemy AI Update at: " + nextEventTime);
             }
         }
+    }
+
+    private void UpdateLevelData(LevelData data)
+    {
+        enemy.difficultyLevel = data.Difficulty;
+        enemy.cooldownDuration = data.ActiveInterval;
+        enemy.lightAnomalyThreshold = data.LightAnomalyThreshold;
+        enemy.heavyAnomalyThreashold = data.HeavyAnomalyThreshold;
+
+        GameManager.instance.levelManager.incenseSpeed = data.IncenseDrainSpeed;
+        GameManager.instance.levelManager.timeSpeed = data.TimeScale;
+    }
+
+    private void UpdateAnomalies(LevelAnomalyData data)
+    {
+        
     }
 
     public bool SpawnRandomLightAnomaly()//Randomly trigger a light anomaly
@@ -171,7 +198,7 @@ public class AnomalyManager : MonoBehaviour
         anomalyPoint = 0;
         foreach (Anomaly anomaly in ActiveAnomalies)
         {
-            anomalyPoint += anomaly.anomalyPointValue;
+            anomalyPoint += anomaly.anomalyPoint;
         }
         return anomalyPoint;
     }
@@ -206,12 +233,18 @@ public class AnomalyManager : MonoBehaviour
             Debug.Log(dict[area].areaEnum);
         }
 
-        Anomaly[] anomalies = FindObjectsByType<Anomaly>(FindObjectsSortMode.None);
+        Anomaly[] AllAnomalies = FindObjectsByType<Anomaly>(FindObjectsSortMode.None);
 
-        if (anomalies != null)
+        if (AllAnomalies != null)
         {
-            foreach (Anomaly anomaly in anomalies) //Assign all anomaly into a list by type
+            foreach (Anomaly anomaly in AllAnomalies) //Assign all anomaly into a list by type
             {
+                var data = DataContainer.Content.anomalies.First(d => d.Id == anomaly.id);
+                if(data != null)
+                {
+                    anomaly.Initialize(data);
+                }
+                
                 AddAnomalyToInactiveList(anomaly);
             }
         }
@@ -219,22 +252,22 @@ public class AnomalyManager : MonoBehaviour
 
     private void AddAnomalyToInactiveList(Anomaly anomaly)
     {
-        if (anomaly.anomalyEnum == AnomalyEnum.LightAnomaly)
+        if (anomaly.anomalyLevel == AnomalyEnum.LightAnomaly)
         {
-            dict[anomaly.areaEnum].lightAnomalies.Add(anomaly);
-            Debug.Log("Added light anomaly: " + anomaly.name + ", in area: " + anomaly.areaEnum);
+            dict[anomaly.area].lightAnomalies.Add(anomaly);
+            Debug.Log("Added light anomaly: " + anomaly.name + ", in area: " + anomaly.area);
         }
-        else if (anomaly.anomalyEnum == AnomalyEnum.HeavyAnomaly)
+        else if (anomaly.anomalyLevel == AnomalyEnum.HeavyAnomaly)
         {
-            dict[anomaly.areaEnum].heavyAnomalies.Add(anomaly);
-            Debug.Log("Added heavy anomaly: " + anomaly.name + ", in area: " + anomaly.areaEnum);
+            dict[anomaly.area].heavyAnomalies.Add(anomaly);
+            Debug.Log("Added heavy anomaly: " + anomaly.name + ", in area: " + anomaly.area);
         }
-        else if (anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+        else if (anomaly.anomalyLevel == AnomalyEnum.AttackAnomaly)
         {
-            dict[anomaly.areaEnum].attackAnomalies.Add(anomaly);
-            Debug.Log("Added light anomaly: " + anomaly.name + ", in area: " + anomaly.areaEnum);
+            dict[anomaly.area].attackAnomalies.Add(anomaly);
+            Debug.Log("Added light anomaly: " + anomaly.name + ", in area: " + anomaly.area);
         }
-        else if (anomaly.anomalyEnum == AnomalyEnum.NotRandomSpawn)
+        else if (anomaly.anomalyLevel == AnomalyEnum.NotRandomSpawn)
         {
             
         }

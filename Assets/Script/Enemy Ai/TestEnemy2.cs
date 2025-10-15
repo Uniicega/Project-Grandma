@@ -5,8 +5,8 @@ public class TestEnemy2 : MonoBehaviour
 {
     [Header("Anomalies")]
     public int difficultyLevel;
-    public int heavyAnomalyThreshhold;
-    public int attackThreashhold;
+    public int lightAnomalyThreshold;
+    public int heavyAnomalyThreashold;
     public float cooldownDuration;
     public float graceDuration;
     [SerializeField] GameObject ghostPrefab;
@@ -58,13 +58,13 @@ public class TestEnemy2 : MonoBehaviour
 
         if (difficultyLevel >= Random.Range(0, 20) && currentGrace <= 0)
         { 
-            if (anomalyPoint >= attackThreashhold)
+            if (anomalyPoint >= heavyAnomalyThreashold)
             {
                 anomalyManager.SpawnRandomAttackAnomaly();
                 currentGrace = graceDuration;
             }
 
-            else if (anomalyPoint >= heavyAnomalyThreshhold)
+            else if (anomalyPoint >= lightAnomalyThreshold)
             {
                 anomalyManager.SpawnRandomHeavyAnomaly();
             }
@@ -78,7 +78,7 @@ public class TestEnemy2 : MonoBehaviour
 
     private void CheckFinishAttackAnomaly(Anomaly anomaly)
     {
-        if(anomaly.anomalyEnum == AnomalyEnum.AttackAnomaly)
+        if(anomaly.anomalyLevel == AnomalyEnum.AttackAnomaly)
         {
             GameEventsManager.instance.anomalyEvents.SnapIncense();
             GameManager.instance.anomalyManager.UndoAllAnomaly();
@@ -88,6 +88,8 @@ public class TestEnemy2 : MonoBehaviour
 
     private void StartJumpscare()
     {
+
+
         GameObject ghost = Instantiate(ghostPrefab, transform.position, Quaternion.identity);
         ghost.GetComponent<ChaseJumpscareHandler>().StartJumpscare();
     }
