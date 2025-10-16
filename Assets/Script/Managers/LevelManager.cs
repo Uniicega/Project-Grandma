@@ -42,7 +42,7 @@ public class LevelManager : MonoBehaviour
     private void Start()
     {
         incenseSection = maxIncenseSection;
-        incenseCurrentTime = incenseMaxTime;
+        //incenseCurrentTime = incenseMaxTime;
     }
 
     private void Update()

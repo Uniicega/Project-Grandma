@@ -82,7 +82,6 @@ public class AnomalyManager : MonoBehaviour
     {
         foreach (Anomaly anomaly in AllAnomalies)
         {
-            Debug.Log(anomaly.id);
             var data = DataContainer.Content.AnomalyConfig.FirstOrDefault(d => d.AnomalyId == anomaly.id);
             if(data != null)
             {

@@ -94,7 +94,6 @@ public abstract class Anomaly: MonoBehaviour
 
     public abstract void UndoAnomaly(Anomaly anomaly);
 
-
     public bool CheckPlayerIsLooking(bool checkisLooking) //Calculate if the player is looking at the node or not
     {
         bool isLooking;
