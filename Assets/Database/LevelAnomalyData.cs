@@ -19,6 +19,7 @@ namespace Game.Database
 
         public void CreateList()
         {
+            activationTimes.Clear();
             activationTimes.Add(Am0);
             activationTimes.Add(Am1);
             activationTimes.Add(Am2);

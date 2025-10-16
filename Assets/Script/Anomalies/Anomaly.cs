@@ -46,6 +46,18 @@ public abstract class Anomaly: MonoBehaviour
 #endif
     }
 
+    public void SetAnomalyEnabled(string text)
+    {
+        if (text == "TRUE")
+        {
+            isEnabled = true;
+        }
+        else
+        {
+            isEnabled = false;
+        }
+    }
+
     private void OnEnable()
     {
         playerCam = GameObject.FindGameObjectWithTag("Player");
@@ -59,7 +71,7 @@ public abstract class Anomaly: MonoBehaviour
 
     protected void Update()
     {
-        if (CurrentCooldown > 0) //Counting down the cooldown
+        if (CurrentCooldown > 0 && isEnabled) //Counting down the cooldown
         {
             CurrentCooldown -= Time.deltaTime;
         }
@@ -67,7 +79,7 @@ public abstract class Anomaly: MonoBehaviour
 
     public bool SpawnAnomaly()
     {
-        if (CurrentCooldown <= 0 && !isActive && CheckPlayerIsLooking(false)) //Check if not in cooldown and not already actived
+        if (CurrentCooldown <= 0 && isEnabled && CheckPlayerIsLooking(false)) //Check if not in cooldown and not already actived
         {
             TriggerAnomaly();
             return true;

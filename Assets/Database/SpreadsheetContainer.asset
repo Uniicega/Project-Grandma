@@ -16,8 +16,8 @@ MonoBehaviour:
   documentId: 1dq28Rb85PaFYwtXRG8o-9N4GYTu2oppLsy4-MFvohHc
   selectedTogglesIds:
   - anomalies
-  - levelConfigs
   - AnomalyConfig
+  - levelConfigs
   foldoutSerializationGUI: 0
   serializationOutputPath: ../../Configs
   serializationFileName: Configs.v0.1
@@ -129,7 +129,13 @@ MonoBehaviour:
       Am3: TRUE
       Am4: TRUE
       Am5: TRUE
-      activationTimes: []
+      activationTimes:
+      - FALSE
+      - FALSE
+      - FALSE
+      - TRUE
+      - TRUE
+      - TRUE
     - AnomalyId: LightCoffin2
       Am0: FALSE
       Am1: FALSE
@@ -137,7 +143,13 @@ MonoBehaviour:
       Am3: TRUE
       Am4: TRUE
       Am5: TRUE
-      activationTimes: []
+      activationTimes:
+      - FALSE
+      - FALSE
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE
     - AnomalyId: LightBathroom1
       Am0: FALSE
       Am1: TRUE
@@ -145,7 +157,13 @@ MonoBehaviour:
       Am3: TRUE
       Am4: TRUE
       Am5: TRUE
-      activationTimes: []
+      activationTimes:
+      - FALSE
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE
     - AnomalyId: LightBathroom2
       Am0: TRUE
       Am1: TRUE
@@ -153,4 +171,10 @@ MonoBehaviour:
       Am3: TRUE
       Am4: TRUE
       Am5: TRUE
-      activationTimes: []
+      activationTimes:
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE
+      - TRUE

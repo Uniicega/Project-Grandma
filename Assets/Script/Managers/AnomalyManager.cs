@@ -24,6 +24,7 @@ public class AnomalyManager : MonoBehaviour
 
     int spawningTries = 4;
 
+    Anomaly[] AllAnomalies;
     public Dictionary<AreaEnum, AreaAnomaly> dict = new Dictionary<AreaEnum, AreaAnomaly>();
     List<AreaEnum> areas = new List<AreaEnum>();
     [SerializeField] private List<Anomaly> ActiveAnomalies = new List<Anomaly>();
@@ -40,6 +41,7 @@ public class AnomalyManager : MonoBehaviour
 
     private void Start()
     {
+        AllAnomalies = FindObjectsByType<Anomaly>(FindObjectsSortMode.None);
         CreateAreaAnomalyDict();
         timedLevelUpdate = DataContainer.Content.levelConfigs;
         timedAnomalyUpdate = DataContainer.Content.AnomalyConfig;
@@ -56,7 +58,7 @@ public class AnomalyManager : MonoBehaviour
             if (nextEventTime <= currentTime)
             {
                 UpdateLevelData(timedLevelUpdate[eventIndex]);//Update enemy Ai 
-                UpdateAnomalies(timedAnomalyUpdate[eventIndex]);
+                UpdateAnomalies(eventIndex);
                 eventIndex++;
                 nextEventTime = timedLevelUpdate[eventIndex].Time;
                 Debug.Log("Change enemy AI at time: " + currentTime);
@@ -76,9 +78,18 @@ public class AnomalyManager : MonoBehaviour
         GameManager.instance.levelManager.timeSpeed = data.TimeScale;
     }
 
-    private void UpdateAnomalies(LevelAnomalyData data)
+    private void UpdateAnomalies(int index)
     {
-        
+        foreach (Anomaly anomaly in AllAnomalies)
+        {
+            Debug.Log(anomaly.id);
+            var data = DataContainer.Content.AnomalyConfig.FirstOrDefault(d => d.AnomalyId == anomaly.id);
+            if(data != null)
+            {
+                string newAnomalyState = data.activationTimes[index];
+                anomaly.SetAnomalyEnabled(newAnomalyState);
+            }
+        }
     }
 
     public bool SpawnRandomLightAnomaly()//Randomly trigger a light anomaly
@@ -233,7 +244,6 @@ public class AnomalyManager : MonoBehaviour
             Debug.Log(dict[area].areaEnum);
         }
 
-        Anomaly[] AllAnomalies = FindObjectsByType<Anomaly>(FindObjectsSortMode.None);
 
         if (AllAnomalies != null)
         {
